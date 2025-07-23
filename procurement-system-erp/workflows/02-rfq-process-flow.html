@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תהליך בקשת הצעת מחיר (RFQ) - Flow</title>
+    
+    <!-- Bootstrap 5 RTL -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Google Fonts - Rubik -->
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Rubik', sans-serif;
+            background-color: #f0f4f8;
+        }
+        
+        .flow-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .flow-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            margin-bottom: 3rem;
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .flow-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .stage-container {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            border-right: 5px solid;
+        }
+        
+        .stage-1 { border-color: #4CAF50; }
+        .stage-2 { border-color: #2196F3; }
+        .stage-3 { border-color: #FF9800; }
+        .stage-4 { border-color: #9C27B0; }
+        .stage-5 { border-color: #F44336; }
+        
+        .stage-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stage-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-left: 1rem;
+            color: white;
+        }
+        
+        .stage-1 .stage-icon { background: #4CAF50; }
+        .stage-2 .stage-icon { background: #2196F3; }
+        .stage-3 .stage-icon { background: #FF9800; }
+        .stage-4 .stage-icon { background: #9C27B0; }
+        .stage-5 .stage-icon { background: #F44336; }
+        
+        .process-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .process-card:hover {
+            transform: translateX(-5px);
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+        
+        .supplier-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .supplier-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .supplier-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 1rem;
+            font-weight: bold;
+        }
+        
+        .comparison-table {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+        
+        .comparison-table th {
+            background: #667eea;
+            color: white;
+            font-weight: 500;
+            padding: 1rem;
+        }
+        
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f0f4f8;
+        }
+        
+        .best-offer {
+            background: #4CAF50;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+        }
+        
+        .flow-connector {
+            text-align: center;
+            margin: 2rem 0;
+            position: relative;
+        }
+        
+        .flow-connector::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 2px;
+            height: 40px;
+            background: #dee2e6;
+            z-index: -1;
+        }
+        
+        .flow-connector i {
+            background: white;
+            color: #667eea;
+            font-size: 2rem;
+            padding: 0 10px;
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .status-draft { background: #e3f2fd; color: #1976d2; }
+        .status-sent { background: #fff3e0; color: #f57c00; }
+        .status-received { background: #f3e5f5; color: #7b1fa2; }
+        .status-complete { background: #e8f5e9; color: #388e3c; }
+        
+        .action-panel {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .metric-box {
+            text-align: center;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .metric-label {
+            color: #6c757d;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="flow-container">
+        <!-- Header -->
+        <div class="flow-header text-center">
+            <h1 class="display-4 fw-bold mb-3">
+                <i class="bi bi-file-earmark-text-fill me-3"></i>
+                תהליך בקשת הצעת מחיר (RFQ)
+            </h1>
+            <p class="lead mb-0">
+                ניהול תהליך קבלת הצעות מחיר מספקים והשוואה ביניהן
+            </p>
+        </div>
+
+        <!-- Process Overview -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <div class="alert alert-info border-0 shadow-sm" role="alert">
+                    <h5 class="alert-heading">
+                        <i class="bi bi-lightbulb-fill me-2"></i>
+                        על התהליך
+                    </h5>
+                    <p>תהליך RFQ מאפשר קבלת הצעות מחיר תחרותיות ממספר ספקים, השוואה אובייקטיבית וקבלת החלטה מושכלת.</p>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <strong>משך זמן:</strong> 3-7 ימים
+                        </div>
+                        <div class="col-sm-4">
+                            <strong>ספקים מומלץ:</strong> 3-5
+                        </div>
+                        <div class="col-sm-4">
+                            <strong>חיסכון ממוצע:</strong> 15-20%
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row g-2">
+                    <div class="col-6">
+                        <div class="metric-box">
+                            <div class="metric-value">247</div>
+                            <div class="metric-label">בקשות השנה</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="metric-box">
+                            <div class="metric-value">3.2</div>
+                            <div class="metric-label">ימים ממוצע</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stage 1 - Creation -->
+        <div class="stage-container stage-1">
+            <div class="stage-header">
+                <div class="stage-icon">
+                    <i class="bi bi-pencil-fill"></i>
+                </div>
+                <div>
+                    <h2 class="h3 mb-1">שלב 1: יצירת בקשה</h2>
+                    <p class="text-muted mb-0">הגדרת הצרכים ויצירת בקשת הצעת מחיר</p>
+                </div>
+                <div class="ms-auto">
+                    <span class="status-badge status-draft">
+                        <i class="bi bi-circle-fill me-2" style="font-size: 0.5rem;"></i>
+                        טיוטה
+                    </span>
+                </div>
+            </div>
+            
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="process-card">
+                        <h5 class="mb-3">
+                            <i class="bi bi-1-circle-fill text-success me-2"></i>
+                            הגדרת פרטי הבקשה
+                        </h5>
+                        <form>
+                            <div class="mb-3">
+                                <label class="form-label">כותרת הבקשה</label>
+                                <input type="text" class="form-control" placeholder="לדוגמה: רכישת ציוד מחשוב לסניף החדש">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">תאריך יעד להגשה</label>
+                                <input type="date" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">הערות לספקים</label>
+                                <textarea class="form-control" rows="3" placeholder="דרישות מיוחדות, תנאי אספקה..."></textarea>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="process-card">
+                        <h5 class="mb-3">
+                            <i class="bi bi-2-circle-fill text-success me-2"></i>
+                            הוספת פריטים
+                        </h5>
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>פריט</th>
+                                        <th>כמות</th>
+                                        <th>יחידה</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>מחשב נייד Dell XPS</td>
+                                        <td>10</td>
+                                        <td>יח'</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>מסך 24" Full HD</td>
+                                        <td>10</td>
+                                        <td>יח'</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>עכבר ומקלדת אלחוטיים</td>
+                                        <td>10</td>
+                                        <td>סט</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <button class="btn btn-sm btn-primary">
+                                <i class="bi bi-plus-circle me-2"></i>הוסף פריט
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-panel">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <i class="bi bi-info-circle text-primary me-2"></i>
+                        <span>הבקשה נשמרת אוטומטית כטיוטה</span>
+                    </div>
+                    <button class="btn btn-success">
+                        המשך לבחירת ספקים
+                        <i class="bi bi-arrow-left ms-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="flow-connector">
+            <i class="bi bi-arrow-down-circle-fill"></i>
+        </div>
+
+        <!-- Stage 2 - Supplier Selection -->
+        <div class="stage-container stage-2">
+            <div class="stage-header">
+                <div class="stage-icon">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <div>
+                    <h2 class="h3 mb-1">שלב 2: בחירת ספקים</h2>
+                    <p class="text-muted mb-0">בחירת הספקים שיקבלו את הבקשה</p>
+                </div>
+                <div class="ms-auto">
+                    <span class="status-badge status-draft">
+                        <i class="bi bi-circle-fill me-2" style="font-size: 0.5rem;"></i>
+                        טיוטה
+                    </span>
+                </div>
+            </div>
+            
+            <div class="row g-3">
+                <div class="col-md-7">
+                    <h5 class="mb-3">ספקים מומלצים בקטגוריה</h5>
+                    <div class="supplier-card">
+                        <input class="form-check-input" type="checkbox" checked>
+                        <div class="supplier-avatar">טכ</div>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-0">טכנולוגיות מתקדמות בע"מ</h6>
+                            <small class="text-muted">דירוג: 4.8 | 127 הזמנות קודמות</small>
+                        </div>
+                        <span class="badge bg-success">מומלץ</span>
+                    </div>
+                    <div class="supplier-card">
+                        <input class="form-check-input" type="checkbox" checked>
+                        <div class="supplier-avatar">מח</div>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-0">מחשבים ורשתות פרו</h6>
+                            <small class="text-muted">דירוג: 4.5 | 89 הזמנות קודמות</small>
+                        </div>
+                    </div>
+                    <div class="supplier-card">
+                        <input class="form-check-input" type="checkbox">
+                        <div class="supplier-avatar">אל</div>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-0">אלקטרוניקה ישירה</h6>
+                            <small class="text-muted">דירוג: 4.2 | 45 הזמנות קודמות</small>
+                        </div>
+                    </div>
+                    <div class="supplier-card">
+                        <input class="form-check-input" type="checkbox">
+                        <div class="supplier-avatar">סמ</div>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-0">סמארט טק סולושנס</h6>
+                            <small class="text-muted">דירוג: 4.6 | 156 הזמנות קודמות</small>
+                        </div>
+                        <span class="badge bg-warning text-dark">ספק חדש</span>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="card border-0 bg-light">
+                        <div class="card-body">
+                            <h5 class="card-title">טיפים לבחירת ספקים</h5>
+                            <ul class="mb-0">
+                                <li>בחר לפחות 3 ספקים להשוואה</li>
+                                <li>שקול ספקים עם דירוג גבוה</li>
+                                <li>בדוק היסטוריית הזמנות</li>
+                                <li>וודא שהספק פעיל בקטגוריה</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <h6>ספקים נבחרים: <span class="badge bg-primary">2</span></h6>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar" style="width: 40%"></div>
+                        </div>
+                        <small class="text-muted">מינימום 3 ספקים מומלץ</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-panel">
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-secondary">
+                        <i class="bi bi-arrow-right me-2"></i>
+                        חזור
+                    </button>
+                    <div>
+                        <button class="btn btn-outline-primary me-2">
+                            <i class="bi bi-search me-2"></i>
+                            חפש ספקים נוספים
+                        </button>
+                        <button class="btn btn-success">
+                            שלח בקשה
+                            <i class="bi bi-send ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flow-connector">
+            <i class="bi bi-arrow-down-circle-fill"></i>
+        </div>
+
+        <!-- Stage 3 - Sending & Tracking -->
+        <div class="stage-container stage-3">
+            <div class="stage-header">
+                <div class="stage-icon">
+                    <i class="bi bi-send-fill"></i>
+                </div>
+                <div>
+                    <h2 class="h3 mb-1">שלב 3: שליחה ומעקב</h2>
+                    <p class="text-muted mb-0">הבקשה נשלחה לספקים וממתינה לתגובות</p>
+                </div>
+                <div class="ms-auto">
+                    <span class="status-badge status-sent">
+                        <i class="bi bi-circle-fill me-2" style="font-size: 0.5rem;"></i>
+                        נשלח
+                    </span>
+                </div>
+            </div>
+            
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <h5 class="mb-3">סטטוס תגובות</h5>
+                    <div class="list-group">
+                        <div class="list-group-item d-flex align-items-center">
+                            <div class="supplier-avatar bg-success">טכ</div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">טכנולוגיות מתקדמות בע"מ</h6>
+                                <div class="d-flex align-items-center">
+                                    <div class="progress flex-grow-1" style="height: 8px;">
+                                        <div class="progress-bar bg-success" style="width: 100%"></div>
+                                    </div>
+                                    <span class="badge bg-success ms-2">התקבלה הצעה</span>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <small class="text-muted">התקבל לפני 2 שעות</small>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye"></i> צפה
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="list-group-item d-flex align-items-center">
+                            <div class="supplier-avatar bg-warning">מח</div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">מחשבים ורשתות פרו</h6>
+                                <div class="d-flex align-items-center">
+                                    <div class="progress flex-grow-1" style="height: 8px;">
+                                        <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" style="width: 60%"></div>
+                                    </div>
+                                    <span class="badge bg-warning text-dark ms-2">בתהליך</span>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <small class="text-muted">נפתח לפני 4 שעות</small>
+                            </div>
+                        </div>
+                        
+                        <div class="list-group-item d-flex align-items-center">
+                            <div class="supplier-avatar bg-secondary">אל</div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">אלקטרוניקה ישירה</h6>
+                                <div class="d-flex align-items-center">
+                                    <div class="progress flex-grow-1" style="height: 8px;">
+                                        <div class="progress-bar bg-secondary" style="width: 0%"></div>
+                                    </div>
+                                    <span class="badge bg-secondary ms-2">ממתין</span>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <small class="text-muted">טרם נפתח</small>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-warning">
+                                        <i class="bi bi-bell"></i> תזכורת
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0">
+                        <div class="card-body text-center">
+                            <div class="display-1 text-primary">1/3</div>
+                            <p class="text-muted">הצעות התקבלו</p>
+                            <hr>
+                            <div class="text-end">
+                                <small class="text-muted">זמן שנותר:</small>
+                                <h5 class="text-danger">2 ימים, 14 שעות</h5>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 mt-3">
+                        <button class="btn btn-outline-primary">
+                            <i class="bi bi-envelope me-2"></i>
+                            שלח תזכורת לכולם
+                        </button>
+                        <button class="btn btn-outline-secondary">
+                            <i class="bi bi-calendar-plus me-2"></i>
+                            הארך מועד הגשה
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flow-connector">
+            <i class="bi bi-arrow-down-circle-fill"></i>
+        </div>
+
+        <!-- Stage 4 - Comparison -->
+        <div class="stage-container stage-4">
+            <div class="stage-header">
+                <div class="stage-icon">
+                    <i class="bi bi-bar-chart-fill"></i>
+                </div>
+                <div>
+                    <h2 class="h3 mb-1">שלב 4: השוואת הצעות</h2>
+                    <p class="text-muted mb-0">ניתוח והשוואה בין ההצעות שהתקבלו</p>
+                </div>
+                <div class="ms-auto">
+                    <span class="status-badge status-received">
+                        <i class="bi bi-circle-fill me-2" style="font-size: 0.5rem;"></i>
+                        התקבלו הצעות
+                    </span>
+                </div>
+            </div>
+            
+            <div class="comparison-table">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>פריט</th>
+                                <th class="text-center">כמות</th>
+                                <th>טכנולוגיות מתקדמות</th>
+                                <th>מחשבים ורשתות פרו</th>
+                                <th>אלקטרוניקה ישירה</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>מחשב נייד Dell XPS</td>
+                                <td class="text-center">10</td>
+                                <td>
+                                    ₪5,200
+                                    <span class="best-offer ms-2">הזול ביותר</span>
+                                </td>
+                                <td>₪5,450</td>
+                                <td>₪5,800</td>
+                            </tr>
+                            <tr>
+                                <td>מסך 24" Full HD</td>
+                                <td class="text-center">10</td>
+                                <td>₪850</td>
+                                <td>
+                                    ₪780
+                                    <span class="best-offer ms-2">הזול ביותר</span>
+                                </td>
+                                <td>₪920</td>
+                            </tr>
+                            <tr>
+                                <td>עכבר ומקלדת אלחוטיים</td>
+                                <td class="text-center">10</td>
+                                <td>₪180</td>
+                                <td>₪195</td>
+                                <td>
+                                    ₪165
+                                    <span class="best-offer ms-2">הזול ביותר</span>
+                                </td>
+                            </tr>
+                            <tr class="table-active fw-bold">
+                                <td colspan="2">סה"כ לפני מע"מ</td>
+                                <td>₪62,300</td>
+                                <td>
+                                    ₪62,250
+                                    <span class="best-offer ms-2">הזול ביותר</span>
+                                </td>
+                                <td>₪68,850</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="row g-3 mt-3">
+                <div class="col-md-6">
+                    <h5 class="mb-3">השוואת תנאים נוספים</h5>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>קריטריון</th>
+                                    <th>טכנולוגיות מתקדמות</th>
+                                    <th>מחשבים ורשתות פרו</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>זמן אספקה</td>
+                                    <td>7 ימי עסקים</td>
+                                    <td class="text-success fw-bold">3 ימי עסקים</td>
+                                </tr>
+                                <tr>
+                                    <td>אחריות</td>
+                                    <td class="text-success fw-bold">3 שנים</td>
+                                    <td>2 שנים</td>
+                                </tr>
+                                <tr>
+                                    <td>תנאי תשלום</td>
+                                    <td>שוטף + 60</td>
+                                    <td>שוטף + 30</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="mb-3">המלצת המערכת</h5>
+                    <div class="alert alert-success border-0">
+                        <h6 class="alert-heading">
+                            <i class="bi bi-trophy-fill me-2"></i>
+                            מחשבים ורשתות פרו
+                        </h6>
+                        <ul class="mb-0">
+                            <li>מחיר כולל הטוב ביותר</li>
+                            <li>זמן אספקה מהיר (3 ימים)</li>
+                            <li>ספק אמין עם היסטוריה טובה</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-panel">
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-outline-secondary">
+                        <i class="bi bi-download me-2"></i>
+                        ייצא להשוואה
+                    </button>
+                    <div>
+                        <button class="btn btn-outline-primary me-2">
+                            <i class="bi bi-chat-dots me-2"></i>
+                            בקש הבהרות
+                        </button>
+                        <button class="btn btn-success">
+                            בחר ספק זוכה
+                            <i class="bi bi-check-circle ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flow-connector">
+            <i class="bi bi-arrow-down-circle-fill"></i>
+        </div>
+
+        <!-- Stage 5 - Decision -->
+        <div class="stage-container stage-5">
+            <div class="stage-header">
+                <div class="stage-icon">
+                    <i class="bi bi-trophy-fill"></i>
+                </div>
+                <div>
+                    <h2 class="h3 mb-1">שלב 5: החלטה וסיום</h2>
+                    <p class="text-muted mb-0">בחירת ספק זוכה והמרה להזמנת רכש</p>
+                </div>
+                <div class="ms-auto">
+                    <span class="status-badge status-complete">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        הושלם
+                    </span>
+                </div>
+            </div>
+            
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <div class="card border-success">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-trophy me-2"></i>
+                                ספק זוכה: מחשבים ורשתות פרו
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>סיכום הזמנה:</h6>
+                                    <table class="table table-sm">
+                                        <tr>
+                                            <td>סכום לפני מע"מ:</td>
+                                            <td class="fw-bold">₪62,250</td>
+                                        </tr>
+                                        <tr>
+                                            <td>מע"מ (17%):</td>
+                                            <td>₪10,582</td>
+                                        </tr>
+                                        <tr class="table-active">
+                                            <td>סה"כ לתשלום:</td>
+                                            <td class="fw-bold">₪72,832</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>פרטי אספקה:</h6>
+                                    <p class="mb-1"><strong>זמן אספקה:</strong> 3 ימי עסקים</p>
+                                    <p class="mb-1"><strong>תנאי תשלום:</strong> שוטף + 30</p>
+                                    <p class="mb-1"><strong>אחריות:</strong> 2 שנים</p>
+                                    <p class="mb-0"><strong>כתובת:</strong> האורנים 15, ת"א</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <h6>הודעות שנשלחו:</h6>
+                        <div class="list-group">
+                            <div class="list-group-item list-group-item-success">
+                                <i class="bi bi-check-circle-fill me-2"></i>
+                                הודעת זכייה נשלחה ל"מחשבים ורשתות פרו"
+                            </div>
+                            <div class="list-group-item">
+                                <i class="bi bi-envelope-fill me-2"></i>
+                                הודעות תודה נשלחו לספקים שלא זכו
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-light border-0">
+                        <div class="card-body">
+                            <h5 class="card-title">פעולות נוספות</h5>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-primary">
+                                    <i class="bi bi-cart-plus me-2"></i>
+                                    צור הזמנת רכש
+                                </button>
+                                <button class="btn btn-outline-primary">
+                                    <i class="bi bi-printer me-2"></i>
+                                    הדפס סיכום
+                                </button>
+                                <button class="btn btn-outline-secondary">
+                                    <i class="bi bi-archive me-2"></i>
+                                    שמור בארכיון
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3 text-center">
+                        <div class="text-success">
+                            <i class="bi bi-check-circle-fill" style="font-size: 3rem;"></i>
+                        </div>
+                        <h5 class="mt-2">התהליך הושלם בהצלחה!</h5>
+                        <p class="text-muted">חסכת ₪6,600 (9.5%)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Process Summary -->
+        <div class="mt-5">
+            <div class="card border-0 shadow-lg">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">
+                        <i class="bi bi-graph-up me-2"></i>
+                        סיכום ומדדי ביצוע
+                    </h4>
+                    
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <div class="metric-box">
+                                <i class="bi bi-clock-history text-primary mb-2" style="font-size: 2rem;"></i>
+                                <div class="metric-value">4.5</div>
+                                <div class="metric-label">ימים עד השלמה</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="metric-box">
+                                <i class="bi bi-people text-success mb-2" style="font-size: 2rem;"></i>
+                                <div class="metric-value">3/3</div>
+                                <div class="metric-label">ספקים הגיבו</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="metric-box">
+                                <i class="bi bi-piggy-bank text-warning mb-2" style="font-size: 2rem;"></i>
+                                <div class="metric-value">9.5%</div>
+                                <div class="metric-label">חיסכון שהושג</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="metric-box">
+                                <i class="bi bi-speedometer2 text-info mb-2" style="font-size: 2rem;"></i>
+                                <div class="metric-value">מצוין</div>
+                                <div class="metric-label">יעילות התהליך</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h6>טיפים לשיפור:</h6>
+                            <ul class="text-muted">
+                                <li>שקול להוסיף עוד ספק אחד להגברת התחרות</li>
+                                <li>הגדר תזכורות אוטומטיות לספקים</li>
+                                <li>צור תבניות לבקשות חוזרות</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>למידה ארגונית:</h6>
+                            <ul class="text-muted">
+                                <li>הספק הזוכה מספק באופן עקבי מחירים תחרותיים</li>
+                                <li>זמן התגובה הממוצע בקטגוריה זו: 2.5 ימים</li>
+                                <li>פוטנציאל חיסכון ממוצע בקטגוריה: 8-12%</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Animation and interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate stage containers on scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.style.opacity = '0';
+                            entry.target.style.transform = 'translateX(-20px)';
+                            
+                            setTimeout(() => {
+                                entry.target.style.transition = 'all 0.6s ease';
+                                entry.target.style.opacity = '1';
+                                entry.target.style.transform = 'translateX(0)';
+                            }, 100);
+                        }, index * 100);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            document.querySelectorAll('.stage-container').forEach(el => {
+                observer.observe(el);
+            });
+            
+            // Interactive checkboxes
+            document.querySelectorAll('.supplier-card input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const card = this.closest('.supplier-card');
+                    if (this.checked) {
+                        card.style.backgroundColor = '#e8f5e9';
+                    } else {
+                        card.style.backgroundColor = 'white';
+                    }
+                    
+                    // Update counter
+                    const checkedCount = document.querySelectorAll('.supplier-card input[type="checkbox"]:checked').length;
+                    document.querySelector('.badge.bg-primary').textContent = checkedCount;
+                    document.querySelector('.progress-bar').style.width = (checkedCount / 5 * 100) + '%';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

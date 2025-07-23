@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ניהול ספקים - מערכת רכש ERP</title>
+    
+    <!-- Bootstrap 5 RTL -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- Google Fonts - Rubik -->
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --success-color: #198754;
+            --info-color: #0dcaf0;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+        }
+        
+        body {
+            font-family: 'Rubik', sans-serif;
+            background-color: #f5f7fa;
+        }
+        
+        /* Navbar */
+        .navbar-brand {
+            font-weight: 600;
+            font-size: 1.4rem;
+        }
+        
+        .navbar .nav-link {
+            font-weight: 500;
+            margin: 0 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar .nav-link:hover {
+            color: #fff !important;
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 0.375rem;
+        }
+        
+        /* Page Header */
+        .page-header {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+            margin-bottom: 2rem;
+        }
+        
+        .page-header h1 {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Action Buttons */
+        .action-btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.15);
+        }
+        
+        /* Filter Section */
+        .filter-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+            margin-bottom: 2rem;
+        }
+        
+        /* Table Card */
+        .table-card {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+            overflow: hidden;
+        }
+        
+        .table-header {
+            background: var(--light-color);
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        /* Table Styling */
+        .custom-table {
+            margin-bottom: 0;
+        }
+        
+        .custom-table thead th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: var(--dark-color);
+            border-bottom: 2px solid #dee2e6;
+            padding: 1rem;
+            white-space: nowrap;
+        }
+        
+        .custom-table tbody tr {
+            transition: all 0.3s ease;
+        }
+        
+        .custom-table tbody tr:hover {
+            background-color: #f8f9fa;
+            transform: scale(1.01);
+            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+        }
+        
+        .custom-table td {
+            padding: 1rem;
+            vertical-align: middle;
+        }
+        
+        /* Status Badges */
+        .status-badge {
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .status-active {
+            background-color: #d1f2eb;
+            color: #0f5447;
+        }
+        
+        .status-inactive {
+            background-color: #f8d7da;
+            color: #842029;
+        }
+        
+        .status-pending {
+            background-color: #fff3cd;
+            color: #664d03;
+        }
+        
+        /* Rating Stars */
+        .rating {
+            color: #ffc107;
+        }
+        
+        .rating .bi-star-fill {
+            margin: 0 1px;
+        }
+        
+        .rating .bi-star {
+            margin: 0 1px;
+            color: #dee2e6;
+        }
+        
+        /* Action Buttons in Table */
+        .btn-action {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+            border-radius: 0.25rem;
+            margin: 0 0.125rem;
+        }
+        
+        /* Pagination */
+        .pagination {
+            margin-bottom: 0;
+        }
+        
+        .page-link {
+            color: var(--primary-color);
+            border-radius: 0.25rem;
+            margin: 0 0.125rem;
+        }
+        
+        .page-link:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        /* Stats Cards */
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+        }
+        
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark-color);
+        }
+        
+        .stat-label {
+            color: var(--secondary-color);
+            font-size: 0.875rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .filter-section .row > div {
+                margin-bottom: 1rem;
+            }
+            
+            .table-responsive {
+                font-size: 0.875rem;
+            }
+            
+            .btn-action {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.75rem;
+            }
+        }
+        
+        /* Loading Spinner */
+        .loading-spinner {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+        }
+        
+        .loading-spinner.show {
+            display: block;
+        }
+        
+        /* Quick Actions Menu */
+        .quick-actions {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            z-index: 1000;
+        }
+        
+        .quick-actions .btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-box-seam-fill me-2"></i>
+                מערכת רכש ERP
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard">
+                            <i class="bi bi-speedometer2 me-1"></i> דשבורד
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/suppliers">
+                            <i class="bi bi-building me-1"></i> ספקים
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/rfq">
+                            <i class="bi bi-file-earmark-text me-1"></i> הצעות מחיר
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/purchase-orders">
+                            <i class="bi bi-cart-check me-1"></i> הזמנות רכש
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/inventory">
+                            <i class="bi bi-box me-1"></i> מלאי
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/reports">
+                            <i class="bi bi-graph-up me-1"></i> דוחות
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle me-2"></i>
+                            משה כהן
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>פרופיל</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>הגדרות</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right me-2"></i>יציאה</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid py-4">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1>
+                        <i class="bi bi-building me-2"></i>
+                        ניהול ספקים
+                    </h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a href="/dashboard">דשבורד</a></li>
+                            <li class="breadcrumb-item active">ספקים</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                    <button class="btn btn-primary action-btn me-2" onclick="window.location.href='/suppliers/add'">
+                        <i class="bi bi-plus-circle me-2"></i>
+                        הוסף ספק חדש
+                    </button>
+                    <button class="btn btn-success action-btn me-2" onclick="importSuppliers()">
+                        <i class="bi bi-cloud-upload me-2"></i>
+                        ייבוא ספקים
+                    </button>
+                    <button class="btn btn-secondary action-btn" onclick="exportSuppliers()">
+                        <i class="bi bi-download me-2"></i>
+                        ייצוא לאקסל
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="stat-card">
+                    <div class="stat-icon text-primary">
+                        <i class="bi bi-building"></i>
+                    </div>
+                    <div class="stat-number">248</div>
+                    <div class="stat-label">סה"כ ספקים</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stat-card">
+                    <div class="stat-icon text-success">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                    <div class="stat-number">195</div>
+                    <div class="stat-label">ספקים פעילים</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stat-card">
+                    <div class="stat-icon text-warning">
+                        <i class="bi bi-clock"></i>
+                    </div>
+                    <div class="stat-number">38</div>
+                    <div class="stat-label">ממתינים לאישור</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stat-card">
+                    <div class="stat-icon text-info">
+                        <i class="bi bi-star"></i>
+                    </div>
+                    <div class="stat-number">4.3</div>
+                    <div class="stat-label">דירוג ממוצע</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <h5 class="mb-3">
+                <i class="bi bi-funnel me-2"></i>
+                סינון וחיפוש
+            </h5>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-label">חיפוש חופשי</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" class="form-control" id="searchInput" placeholder="שם ספק, ח.פ, איש קשר...">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="form-label">קטגוריה</label>
+                        <select class="form-select" id="categoryFilter">
+                            <option value="">כל הקטגוריות</option>
+                            <option value="electronics">אלקטרוניקה</option>
+                            <option value="computers">מחשבים</option>
+                            <option value="accessories">אביזרים</option>
+                            <option value="software">תוכנה</option>
+                            <option value="services">שירותים</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="form-label">סטטוס</label>
+                        <select class="form-select" id="statusFilter">
+                            <option value="">כל הסטטוסים</option>
+                            <option value="active">פעיל</option>
+                            <option value="inactive">לא פעיל</option>
+                            <option value="pending">ממתין לאישור</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="form-label">דירוג מינימלי</label>
+                        <select class="form-select" id="ratingFilter">
+                            <option value="">הכל</option>
+                            <option value="5">5 כוכבים</option>
+                            <option value="4">4 כוכבים ומעלה</option>
+                            <option value="3">3 כוכבים ומעלה</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button class="btn btn-primary me-2" onclick="applyFilters()">
+                        <i class="bi bi-funnel-fill me-2"></i>
+                        החל סינון
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearFilters()">
+                        <i class="bi bi-x-circle me-2"></i>
+                        נקה
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table Section -->
+        <div class="table-card">
+            <div class="table-header">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h5 class="mb-0">
+                            <i class="bi bi-list-ul me-2"></i>
+                            רשימת ספקים (248)
+                        </h5>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-sm btn-outline-secondary active">
+                                <i class="bi bi-grid"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-list"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table table-hover custom-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" class="form-check-input" id="selectAll">
+                            </th>
+                            <th>שם ספק/חברה</th>
+                            <th>ח.פ</th>
+                            <th>איש קשר</th>
+                            <th>טלפון</th>
+                            <th>קטגוריות</th>
+                            <th>דירוג</th>
+                            <th>סטטוס</th>
+                            <th>פעולות</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="checkbox" class="form-check-input"></td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3">
+                                        א
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">אלקטרוניקה ישראל בע"מ</div>
+                                        <small class="text-muted">ספק מאז: 2019</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>512345678</td>
+                            <td>
+                                <div>יוסי כהן</div>
+                                <small class="text-muted">מנהל מכירות</small>
+                            </td>
+                            <td>
+                                <div>054-1234567</div>
+                                <small class="text-muted">yossi@electronics.co.il</small>
+                            </td>
+                            <td>
+                                <span class="badge bg-primary me-1">אלקטרוניקה</span>
+                                <span class="badge bg-secondary">מחשבים</span>
+                            </td>
+                            <td>
+                                <div class="rating">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-half"></i>
+                                    <span class="ms-1">4.5</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-badge status-active">פעיל</span>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-primary btn-action" title="צפייה">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button class="btn btn-sm btn-warning btn-action" title="עריכה">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm btn-info btn-action" title="הצעות מחיר">
+                                    <i class="bi bi-file-earmark-text"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" class="form-check-input"></td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-sm bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3">
+                                        מ
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">מחשבי על חברה לסחר בע"מ</div>
+                                        <small class="text-muted">ספק מאז: 2020</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>523456789</td>
+                            <td>
+                                <div>רונית לוי</div>
+                                <small class="text-muted">מנהלת חשבונות</small>
+                            </td>
+                            <td>
+                                <div>03-5555555</div>
+                                <small class="text-muted">ronit@computers-al.com</small>
+                            </td>
+                            <td>
+                                <span class="badge bg-primary me-1">מחשבים</span>
+                                <span class="badge bg-info">תוכנה</span>
+                            </td>
+                            <td>
+                                <div class="rating">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <span class="ms-1">5.0</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-badge status-active">פעיל</span>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-primary btn-action" title="צפייה">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button class="btn btn-sm btn-warning btn-action" title="עריכה">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm btn-info btn-action" title="הצעות מחיר">
+                                    <i class="bi bi-file-earmark-text"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" class="form-check-input"></td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-sm bg-warning text-white rounded-circle d-flex align-items-center justify-content-center me-3">
+                                        ט
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">טכנולוגיות מתקדמות בע"מ</div>
+                                        <small class="text-muted">ספק מאז: 2022</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>534567890</td>
+                            <td>
+                                <div>דני אברהם</div>
+                                <small class="text-muted">סמנכ"ל מכירות</small>
+                            </td>
+                            <td>
+                                <div>052-9876543</div>
+                                <small class="text-muted">danny@techadvanced.co.il</small>
+                            </td>
+                            <td>
+                                <span class="badge bg-success me-1">אביזרים</span>
+                                <span class="badge bg-warning">שירותים</span>
+                            </td>
+                            <td>
+                                <div class="rating">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star"></i>
+                                    <i class="bi bi-star"></i>
+                                    <span class="ms-1">3.0</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-badge status-pending">ממתין לאישור</span>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-primary btn-action" title="צפייה">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button class="btn btn-sm btn-success btn-action" title="אישור">
+                                    <i class="bi bi-check-circle"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger btn-action" title="דחייה">
+                                    <i class="bi bi-x-circle"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" class="form-check-input"></td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-sm bg-danger text-white rounded-circle d-flex align-items-center justify-content-center me-3">
+                                        ג
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">גלובל טכנולוגיות</div>
+                                        <small class="text-muted">ספק מאז: 2018</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>545678901</td>
+                            <td>
+                                <div>שרה מזרחי</div>
+                                <small class="text-muted">מנכ"לית</small>
+                            </td>
+                            <td>
+                                <div>04-8888888</div>
+                                <small class="text-muted">sara@globaltech.com</small>
+                            </td>
+                            <td>
+                                <span class="badge bg-primary me-1">אלקטרוניקה</span>
+                                <span class="badge bg-danger">מיובא</span>
+                            </td>
+                            <td>
+                                <div class="rating">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star"></i>
+                                    <span class="ms-1">4.0</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-badge status-inactive">לא פעיל</span>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-primary btn-action" title="צפייה">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button class="btn btn-sm btn-success btn-action" title="הפעלה מחדש">
+                                    <i class="bi bi-arrow-clockwise"></i>
+                                </button>
+                                <button class="btn btn-sm btn-secondary btn-action" title="היסטוריה">
+                                    <i class="bi bi-clock-history"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="d-flex justify-content-between align-items-center p-3">
+                <div>
+                    מציג 1-10 מתוך 248 רשומות
+                </div>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item"><a class="page-link" href="#">...</a></li>
+                        <li class="page-item"><a class="page-link" href="#">25</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <button class="btn btn-primary btn-lg" title="הוסף ספק חדש">
+            <i class="bi bi-plus-lg"></i>
+        </button>
+        <button class="btn btn-info btn-lg" title="ייבוא נתונים">
+            <i class="bi bi-cloud-upload"></i>
+        </button>
+        <button class="btn btn-warning btn-lg" title="עזרה">
+            <i class="bi bi-question-lg"></i>
+        </button>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div class="loading-spinner">
+        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">טוען...</span>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+
+        // Select All checkbox
+        document.getElementById('selectAll').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
+                applyFilters();
+            }
+        });
+
+        // Filter functions
+        function applyFilters() {
+            showLoading();
+            // Simulate API call
+            setTimeout(() => {
+                hideLoading();
+                showNotification('הסינון הופעל בהצלחה', 'success');
+            }, 1000);
+        }
+
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('ratingFilter').value = '';
+            applyFilters();
+        }
+
+        // Import/Export functions
+        function importSuppliers() {
+            // Create file input
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.csv,.xlsx,.xls';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    showLoading();
+                    // Simulate upload
+                    setTimeout(() => {
+                        hideLoading();
+                        showNotification(`הקובץ ${file.name} נטען בהצלחה`, 'success');
+                    }, 2000);
+                }
+            };
+            input.click();
+        }
+
+        function exportSuppliers() {
+            showLoading();
+            // Simulate export
+            setTimeout(() => {
+                hideLoading();
+                showNotification('הנתונים יוצאו בהצלחה', 'success');
+                // In real implementation, trigger file download
+            }, 1500);
+        }
+
+        // Loading functions
+        function showLoading() {
+            document.querySelector('.loading-spinner').classList.add('show');
+        }
+
+        function hideLoading() {
+            document.querySelector('.loading-spinner').classList.remove('show');
+        }
+
+        // Notification function
+        function showNotification(message, type = 'info') {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
+            alertDiv.style.zIndex = '9999';
+            alertDiv.innerHTML = `
+                <i class="bi bi-${type === 'success' ? 'check-circle' : 'info-circle'} me-2"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(alertDiv);
+            
+            // Auto dismiss after 3 seconds
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
+        }
+
+        // Table row click handler
+        document.querySelectorAll('tbody tr').forEach(row => {
+            row.addEventListener('click', function(e) {
+                // Don't trigger on button/checkbox clicks
+                if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'I') {
+                    return;
+                }
+                // Navigate to supplier details
+                window.location.href = '/suppliers/view/123';
+            });
+        });
+
+        // Page load animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate stat cards
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

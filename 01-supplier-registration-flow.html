@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תהליך רישום ספק חדש - Flow</title>
+    
+    <!-- Bootstrap 5 RTL -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Google Fonts - Rubik -->
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Rubik', sans-serif;
+            background-color: #f8f9fa;
+        }
+        
+        .flow-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .flow-header {
+            background: linear-gradient(135deg, #00BF63 0%, #00D26A 100%);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 15px;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .process-step {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .process-step:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        
+        .step-number {
+            position: absolute;
+            top: -20px;
+            right: 30px;
+            background: #00BF63;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,191,99,0.3);
+        }
+        
+        .step-arrow {
+            text-align: center;
+            margin: 1rem 0;
+            color: #00BF63;
+            font-size: 2rem;
+        }
+        
+        .decision-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem 0;
+            position: relative;
+        }
+        
+        .decision-box::before {
+            content: '❓';
+            position: absolute;
+            top: -15px;
+            right: 30px;
+            background: white;
+            padding: 0 10px;
+            font-size: 1.5rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            right: 50px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: #e9ecef;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-right: 80px;
+            padding-bottom: 2rem;
+        }
+        
+        .timeline-marker {
+            position: absolute;
+            right: 40px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            background: #00BF63;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px #e9ecef;
+        }
+        
+        .alert-custom {
+            border-right: 5px solid;
+            background-color: rgba(13, 202, 240, 0.1);
+            border-color: #0dcaf0;
+        }
+        
+        .workflow-legend {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .legend-icon {
+            width: 30px;
+            height: 30px;
+            margin-left: 10px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="flow-container">
+        <!-- Header -->
+        <div class="flow-header text-center">
+            <h1 class="display-4 fw-bold mb-3">
+                <i class="bi bi-person-plus-fill me-3"></i>
+                תהליך רישום ספק חדש
+            </h1>
+            <p class="lead mb-0">
+                תהליך מלא לרישום, אימות והפעלת ספק חדש במערכת
+            </p>
+        </div>
+
+        <!-- Process Overview -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <div class="alert alert-custom" role="alert">
+                    <h5 class="alert-heading">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        סקירת תהליך
+                    </h5>
+                    <p>תהליך רישום ספק חדש כולל מספר שלבים קריטיים להבטחת איכות וחוקיות הספק.</p>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <strong>משך זמן ממוצע:</strong> 3-5 ימי עסקים
+                        </div>
+                        <div class="col-sm-6">
+                            <strong>מחלקות מעורבות:</strong> רכש, כספים, משפטית
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="workflow-legend">
+                    <h6 class="fw-bold mb-3">מקרא</h6>
+                    <div class="legend-item">
+                        <div class="legend-icon bg-success text-white">
+                            <i class="bi bi-play-fill"></i>
+                        </div>
+                        <span>התחלת תהליך</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-icon bg-primary text-white">
+                            <i class="bi bi-gear-fill"></i>
+                        </div>
+                        <span>פעולה במערכת</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-icon bg-warning text-dark">
+                            <i class="bi bi-question-circle-fill"></i>
+                        </div>
+                        <span>נקודת החלטה</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-icon bg-danger text-white">
+                            <i class="bi bi-stop-fill"></i>
+                        </div>
+                        <span>סיום תהליך</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Process Steps -->
+        <div class="process-flow">
+            <!-- Step 1 -->
+            <div class="process-step">
+                <div class="step-number">1</div>
+                <h3 class="mb-3">
+                    <i class="bi bi-door-open-fill text-success me-2"></i>
+                    התחלת תהליך רישום
+                </h3>
+                <p class="text-muted mb-3">
+                    המשתמש נכנס למסך "הוספת ספק חדש" ומתחיל את תהליך הרישום
+                </p>
+                
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <h6 class="fw-bold">פעולות נדרשות:</h6>
+                                <ul class="mb-0">
+                                    <li>כניסה למודול ספקים</li>
+                                    <li>לחיצה על "הוסף ספק חדש"</li>
+                                    <li>בחירת סוג ספק (חברה/עוסק מורשה/אחר)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <h6 class="fw-bold">הרשאות נדרשות:</h6>
+                                <ul class="mb-0">
+                                    <li>הרשאת "יצירת ספק"</li>
+                                    <li>גישה למודול ספקים</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-primary">
+                        <i class="bi bi-play-circle me-2"></i>התחל רישום
+                    </button>
+                    <button class="btn btn-outline-secondary">
+                        <i class="bi bi-download me-2"></i>הורד טופס ידני
+                    </button>
+                </div>
+            </div>
+
+            <div class="step-arrow">
+                <i class="bi bi-arrow-down-circle-fill"></i>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="process-step">
+                <div class="step-number">2</div>
+                <h3 class="mb-3">
+                    <i class="bi bi-pencil-square text-primary me-2"></i>
+                    מילוי פרטי ספק
+                </h3>
+                <p class="text-muted mb-3">
+                    מילוי כל הפרטים הנדרשים בטופס רישום הספק
+                </p>
+                
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <h6 class="fw-bold">פרטי חברה</h6>
+                        <p class="text-muted mb-0">שם, ח.פ/ע.מ, כתובת, סוג עסק</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <h6 class="fw-bold">אנשי קשר</h6>
+                        <p class="text-muted mb-0">לפחות איש קשר אחד עם פרטים מלאים</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <h6 class="fw-bold">תחומי פעילות</h6>
+                        <p class="text-muted mb-0">קטגוריות, מותגים, מוצרים עיקריים</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <h6 class="fw-bold">תנאי סחר</h6>
+                        <p class="text-muted mb-0">תנאי תשלום, מסגרת אשראי, הנחות</p>
+                    </div>
+                </div>
+                
+                <div class="alert alert-warning d-flex align-items-center" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <div>
+                        <strong>שים לב:</strong> שדות חובה מסומנים בכוכבית אדומה (*)
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-arrow">
+                <i class="bi bi-arrow-down-circle-fill"></i>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="process-step">
+                <div class="step-number">3</div>
+                <h3 class="mb-3">
+                    <i class="bi bi-cloud-upload text-info me-2"></i>
+                    העלאת מסמכים
+                </h3>
+                <p class="text-muted mb-3">
+                    העלאת כל המסמכים הנדרשים לאימות הספק
+                </p>
+                
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="bi bi-file-earmark-check fs-1 text-success mb-3"></i>
+                                <h6>מסמכי חובה</h6>
+                                <ul class="list-unstyled small text-muted">
+                                    <li>אישור ניהול ספרים</li>
+                                    <li>אישור ניכוי מס במקור</li>
+                                    <li>תעודת עוסק מורשה</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="bi bi-file-earmark-plus fs-1 text-primary mb-3"></i>
+                                <h6>מסמכים מומלצים</h6>
+                                <ul class="list-unstyled small text-muted">
+                                    <li>רישיון עסק</li>
+                                    <li>ביטוחים</li>
+                                    <li>קטלוג מוצרים</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="bi bi-info-circle fs-1 text-info mb-3"></i>
+                                <h6>דרישות טכניות</h6>
+                                <ul class="list-unstyled small text-muted">
+                                    <li>פורמט: PDF, JPG, PNG</li>
+                                    <li>גודל מקסימלי: 10MB</li>
+                                    <li>איכות קריאה</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-arrow">
+                <i class="bi bi-arrow-down-circle-fill"></i>
+            </div>
+
+            <!-- Decision Point -->
+            <div class="decision-box">
+                <h4 class="mb-3">
+                    <i class="bi bi-signpost-split-fill me-2"></i>
+                    בדיקת שלמות נתונים
+                </h4>
+                <p>המערכת בודקת האם כל הפרטים והמסמכים הנדרשים הועלו</p>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card border-success">
+                            <div class="card-body">
+                                <h6 class="text-success">
+                                    <i class="bi bi-check-circle-fill me-2"></i>
+                                    הנתונים שלמים
+                                </h6>
+                                <p class="mb-0">המשך לשלב הבדיקה והאימות</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card border-danger">
+                            <div class="card-body">
+                                <h6 class="text-danger">
+                                    <i class="bi bi-x-circle-fill me-2"></i>
+                                    חסרים נתונים
+                                </h6>
+                                <p class="mb-0">חזרה להשלמת הפרטים החסרים</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-arrow">
+                <i class="bi bi-arrow-down-circle-fill"></i>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="process-step">
+                <div class="step-number">4</div>
+                <h3 class="mb-3">
+                    <i class="bi bi-search text-warning me-2"></i>
+                    בדיקה ואימות
+                </h3>
+                <p class="text-muted mb-3">
+                    בדיקת הפרטים והמסמכים על ידי הגורמים הרלוונטיים
+                </p>
+                
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <h6 class="fw-bold mb-3">בדיקות אוטומטיות:</h6>
+                        <div class="list-group">
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-robot me-2"></i>תקינות ח.פ/ע.מ</span>
+                                <span class="badge bg-success">אוטומטי</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-robot me-2"></i>כפילות במערכת</span>
+                                <span class="badge bg-success">אוטומטי</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-robot me-2"></i>תוקף מסמכים</span>
+                                <span class="badge bg-success">אוטומטי</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="fw-bold mb-3">בדיקות ידניות:</h6>
+                        <div class="list-group">
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-person-check me-2"></i>אימות מול רשויות</span>
+                                <span class="badge bg-primary">מחלקת כספים</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-person-check me-2"></i>בדיקת אמינות</span>
+                                <span class="badge bg-primary">מחלקת רכש</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-person-check me-2"></i>אישור משפטי</span>
+                                <span class="badge bg-primary">מחלקה משפטית</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="progress mt-4" style="height: 30px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 70%">
+                        <span class="fw-bold">70% הושלם</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-arrow">
+                <i class="bi bi-arrow-down-circle-fill"></i>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="process-step">
+                <div class="step-number">5</div>
+                <h3 class="mb-3">
+                    <i class="bi bi-shield-check text-success me-2"></i>
+                    אישור סופי והפעלה
+                </h3>
+                <p class="text-muted mb-3">
+                    אישור סופי של הספק והפעלתו במערכת
+                </p>
+                
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="card text-center h-100">
+                            <div class="card-body">
+                                <div class="display-4 text-primary mb-3">
+                                    <i class="bi bi-person-check-fill"></i>
+                                </div>
+                                <h5>אישור מנהל רכש</h5>
+                                <p class="text-muted">אישור תנאי סחר וקטגוריות</p>
+                                <button class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-check-lg me-1"></i>אשר
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-center h-100">
+                            <div class="card-body">
+                                <div class="display-4 text-warning mb-3">
+                                    <i class="bi bi-currency-dollar"></i>
+                                </div>
+                                <h5>אישור כספים</h5>
+                                <p class="text-muted">אישור מסגרת אשראי ותנאים</p>
+                                <button class="btn btn-sm btn-outline-warning">
+                                    <i class="bi bi-check-lg me-1"></i>אשר
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-center h-100">
+                            <div class="card-body">
+                                <div class="display-4 text-success mb-3">
+                                    <i class="bi bi-building-check"></i>
+                                </div>
+                                <h5>הפעלה במערכת</h5>
+                                <p class="text-muted">הספק פעיל ומוכן לעבודה</p>
+                                <span class="badge bg-success">פעיל</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-arrow">
+                <i class="bi bi-arrow-down-circle-fill"></i>
+            </div>
+
+            <!-- Final Step -->
+            <div class="process-step bg-success bg-opacity-10 border-success">
+                <h3 class="mb-3 text-success">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    סיום התהליך
+                </h3>
+                <p class="mb-3">הספק נרשם בהצלחה במערכת!</p>
+                
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <h6 class="fw-bold">פעולות זמינות:</h6>
+                        <ul>
+                            <li>יצירת הזמנת רכש ראשונה</li>
+                            <li>שליחת בקשת הצעת מחיר</li>
+                            <li>הגדרת מוצרים לספק</li>
+                            <li>הדפסת כרטיס ספק</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="fw-bold">התראות שנשלחו:</h6>
+                        <ul>
+                            <li>אימייל אישור לספק</li>
+                            <li>הודעה למחלקת רכש</li>
+                            <li>עדכון במערכת ההתראות</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-success">
+                        <i class="bi bi-eye me-2"></i>צפה בכרטיס ספק
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="bi bi-cart-plus me-2"></i>צור הזמנה ראשונה
+                    </button>
+                    <button class="btn btn-outline-secondary">
+                        <i class="bi bi-printer me-2"></i>הדפס אישור
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Process Summary -->
+        <div class="mt-5">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">
+                        <i class="bi bi-clipboard-data me-2"></i>
+                        סיכום ומדדי ביצוע
+                    </h4>
+                    
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <div class="display-6 text-primary fw-bold">5</div>
+                                <div class="text-muted">שלבים בתהליך</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <div class="display-6 text-success fw-bold">3-5</div>
+                                <div class="text-muted">ימי עסקים</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <div class="display-6 text-warning fw-bold">3</div>
+                                <div class="text-muted">מחלקות מעורבות</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <div class="display-6 text-info fw-bold">95%</div>
+                                <div class="text-muted">שיעור הצלחה</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Simulate process flow animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const steps = document.querySelectorAll('.process-step');
+            
+            steps.forEach((step, index) => {
+                setTimeout(() => {
+                    step.style.opacity = '0';
+                    step.style.transform = 'translateY(20px)';
+                    
+                    setTimeout(() => {
+                        step.style.transition = 'all 0.5s ease';
+                        step.style.opacity = '1';
+                        step.style.transform = 'translateY(0)';
+                    }, 100);
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>

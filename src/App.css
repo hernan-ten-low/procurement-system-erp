@@ -1,0 +1,72 @@
+.App {
+  text-align: center;
+}
+
+/* Custom Navbar */
+.navbar-brand {
+  font-weight: bold;
+}
+
+/* Sidebar styles */
+.sidebar {
+  background-color: #f8f9fa;
+  min-height: calc(100vh - 60px);
+  border-left: 1px solid #dee2e6;
+}
+
+.sidebar-nav .nav-link {
+  color: #495057;
+  padding: 0.75rem 1rem;
+  border-radius: 0;
+}
+
+.sidebar-nav .nav-link:hover {
+  background-color: #e9ecef;
+  color: var(--primary-color);
+}
+
+.sidebar-nav .nav-link.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Table styles */
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 191, 99, 0.05);
+}
+
+/* Badge styles */
+.badge {
+  font-size: 0.75em;
+}
+
+/* Avatar styles */
+.avatar-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: white;
+  background-color: var(--primary-color);
+}
+
+.avatar-lg {
+  width: 80px;
+  height: 80px;
+  font-size: 2rem;
+}
+
+/* Rating stars */
+.rating {
+  color: #ffc107;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+}

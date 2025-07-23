@@ -1,0 +1,309 @@
+{
+  "workflow": {
+    "name": "מערכת ניהול רכש וספקים - תהליכי עבודה",
+    "version": "1.0.0",
+    "language": "he",
+    "direction": "rtl",
+    "created": "2025-01-01",
+    "author": "ERP Development Team"
+  },
+  
+  "settings": {
+    "general": {
+      "enableAnimations": true,
+      "animationSpeed": "normal",
+      "autoSave": true,
+      "autoSaveInterval": 30000,
+      "sessionTimeout": 1800000,
+      "debugMode": false
+    },
+    
+    "ui": {
+      "theme": "light",
+      "primaryColor": "#00bf63",
+      "secondaryColor": "#011939",
+      "accentColor": "#667eea",
+      "fontFamily": "Rubik",
+      "fontSize": "16px",
+      "borderRadius": "10px",
+      "enableTooltips": true,
+      "enableSounds": false
+    },
+    
+    "validation": {
+      "requireStrongPassword": true,
+      "minPasswordLength": 8,
+      "requireEmailVerification": true,
+      "maxFileSize": 10485760,
+      "allowedFileTypes": [
+        "application/pdf",
+        "image/jpeg",
+        "image/png",
+        "application/vnd.ms-excel",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      ]
+    },
+    
+    "notifications": {
+      "enableDesktop": true,
+      "enableEmail": true,
+      "enableSMS": false,
+      "defaultDuration": 5000,
+      "position": "top-end",
+      "soundEnabled": false
+    },
+    
+    "storage": {
+      "provider": "localStorage",
+      "encryptData": false,
+      "compressionEnabled": false,
+      "maxStorageSize": 5242880,
+      "cleanupInterval": 86400000
+    }
+  },
+  
+  "workflows": {
+    "supplierRegistration": {
+      "id": "supplier-registration",
+      "name": "רישום ספק חדש",
+      "steps": 5,
+      "estimatedTime": "15-20 דקות",
+      "requiredFields": [
+        "companyName",
+        "businessNumber",
+        "contactName",
+        "phone",
+        "email"
+      ],
+      "requiredDocuments": [
+        "businessLicense",
+        "taxCertificate",
+        "bankDetails"
+      ],
+      "approvalLevels": 2,
+      "notifications": {
+        "onStart": true,
+        "onComplete": true,
+        "onError": true
+      }
+    },
+    
+    "rfqProcess": {
+      "id": "rfq-process",
+      "name": "בקשת הצעת מחיר",
+      "steps": 6,
+      "estimatedTime": "3-7 ימים",
+      "minSuppliers": 3,
+      "maxSuppliers": 10,
+      "defaultDeadlineDays": 7,
+      "autoReminders": true,
+      "reminderIntervals": [3, 1],
+      "scoringCriteria": {
+        "price": 0.4,
+        "quality": 0.3,
+        "delivery": 0.2,
+        "terms": 0.1
+      }
+    },
+    
+    "purchaseOrder": {
+      "id": "purchase-order",
+      "name": "הזמנת רכש",
+      "steps": 5,
+      "estimatedTime": "1-2 ימים",
+      "approvalThresholds": [
+        {
+          "amount": 10000,
+          "approvers": ["department_manager"]
+        },
+        {
+          "amount": 50000,
+          "approvers": ["department_manager", "purchasing_manager"]
+        },
+        {
+          "amount": 100000,
+          "approvers": ["department_manager", "purchasing_manager", "cfo"]
+        }
+      ],
+      "requiresPO": true,
+      "autoNumbering": true,
+      "numberFormat": "PO-YYYY-NNNN"
+    },
+    
+    "goodsReceiving": {
+      "id": "goods-receiving",
+      "name": "קליטת סחורה",
+      "steps": 4,
+      "estimatedTime": "30-60 דקות",
+      "requiresPhotos": true,
+      "qualityCheckRequired": true,
+      "discrepancyThreshold": 0.05,
+      "autoUpdateInventory": true,
+      "notifyOnDiscrepancy": true
+    },
+    
+    "supplierEvaluation": {
+      "id": "supplier-evaluation",
+      "name": "הערכת ספקים",
+      "frequency": "quarterly",
+      "criteria": [
+        {
+          "name": "quality",
+          "weight": 0.25,
+          "minScore": 1,
+          "maxScore": 5
+        },
+        {
+          "name": "delivery",
+          "weight": 0.25,
+          "minScore": 1,
+          "maxScore": 5
+        },
+        {
+          "name": "service",
+          "weight": 0.25,
+          "minScore": 1,
+          "maxScore": 5
+        },
+        {
+          "name": "price",
+          "weight": 0.25,
+          "minScore": 1,
+          "maxScore": 5
+        }
+      ],
+      "minAcceptableScore": 3.0,
+      "improvementPlanThreshold": 3.5
+    }
+  },
+  
+  "api": {
+    "baseUrl": "/api/v1",
+    "timeout": 30000,
+    "retryAttempts": 3,
+    "retryDelay": 1000,
+    "headers": {
+      "Accept": "application/json",
+      "Content-Type": "application/json"
+    },
+    "endpoints": {
+      "suppliers": "/suppliers",
+      "rfq": "/rfq",
+      "purchaseOrders": "/purchase-orders",
+      "inventory": "/inventory",
+      "reports": "/reports"
+    }
+  },
+  
+  "localization": {
+    "defaultLanguage": "he",
+    "supportedLanguages": ["he", "en"],
+    "dateFormat": "DD/MM/YYYY",
+    "timeFormat": "HH:mm",
+    "currency": "ILS",
+    "currencySymbol": "₪",
+    "thousandsSeparator": ",",
+    "decimalSeparator": "."
+  },
+  
+  "security": {
+    "enableCSRF": true,
+    "enableXSS": true,
+    "contentSecurityPolicy": "default-src 'self'",
+    "sessionDuration": 3600000,
+    "maxLoginAttempts": 5,
+    "lockoutDuration": 900000,
+    "passwordPolicy": {
+      "minLength": 8,
+      "requireUppercase": true,
+      "requireLowercase": true,
+      "requireNumbers": true,
+      "requireSpecialChars": true,
+      "preventReuse": 5
+    }
+  },
+  
+  "features": {
+    "enableDarkMode": true,
+    "enablePrintMode": true,
+    "enableExport": true,
+    "exportFormats": ["pdf", "excel", "csv"],
+    "enableImport": true,
+    "importFormats": ["csv", "excel"],
+    "enableBulkOperations": true,
+    "enableAdvancedSearch": true,
+    "enableDashboard": true,
+    "enableReports": true,
+    "enableAuditLog": true
+  },
+  
+  "performance": {
+    "enableCaching": true,
+    "cacheTimeout": 300000,
+    "lazyLoading": true,
+    "virtualization": true,
+    "compressionEnabled": true,
+    "minifyAssets": true,
+    "optimizeImages": true,
+    "maxConcurrentRequests": 6
+  },
+  
+  "integrations": {
+    "erp": {
+      "enabled": false,
+      "provider": "SAP",
+      "syncInterval": 3600000
+    },
+    "email": {
+      "enabled": true,
+      "provider": "smtp",
+      "host": "smtp.example.com",
+      "port": 587,
+      "secure": true
+    },
+    "sms": {
+      "enabled": false,
+      "provider": "twilio"
+    },
+    "storage": {
+      "provider": "local",
+      "path": "/uploads"
+    }
+  },
+  
+  "monitoring": {
+    "enableAnalytics": true,
+    "trackingId": "UA-XXXXXX-X",
+    "enableErrorTracking": true,
+    "errorTrackingService": "sentry",
+    "logLevel": "info",
+    "enablePerformanceMonitoring": true
+  },
+  
+  "businessRules": {
+    "workingDays": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"],
+    "workingHours": {
+      "start": "08:00",
+      "end": "17:00"
+    },
+    "holidays": [
+      "2025-04-13",
+      "2025-04-20",
+      "2025-09-16",
+      "2025-09-25"
+    ],
+    "fiscalYearStart": "01-01",
+    "budgetWarningThreshold": 0.8,
+    "autoArchiveAfterDays": 365
+  },
+  
+  "customization": {
+    "logo": "/assets/images/logo.png",
+    "favicon": "/assets/images/favicon.ico",
+    "companyName": "חברה לדוגמה בע\"מ",
+    "supportEmail": "support@example.com",
+    "supportPhone": "03-1234567",
+    "termsUrl": "/terms",
+    "privacyUrl": "/privacy"
+  }
+}

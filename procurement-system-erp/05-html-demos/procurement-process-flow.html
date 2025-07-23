@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תהליך ניהול רכש וספקים - מערכת ERP</title>
+    
+    <!-- Bootstrap 5 RTL -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- Google Fonts - Rubik -->
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2c5aa0;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --info-color: #17a2b8;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+        }
+        
+        body {
+            font-family: 'Rubik', sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        /* כותרת ראשית */
+        .main-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1e3c72 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .main-header h1 {
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .main-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        /* כרטיסיות תהליך */
+        .process-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border-right: 5px solid var(--primary-color);
+        }
+        
+        .process-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .process-icon {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .icon-primary { background-color: rgba(44, 90, 160, 0.1); color: var(--primary-color); }
+        .icon-success { background-color: rgba(40, 167, 69, 0.1); color: var(--success-color); }
+        .icon-info { background-color: rgba(23, 162, 184, 0.1); color: var(--info-color); }
+        .icon-warning { background-color: rgba(255, 193, 7, 0.1); color: var(--warning-color); }
+        .icon-danger { background-color: rgba(220, 53, 69, 0.1); color: var(--danger-color); }
+        
+        /* תרשים זרימה */
+        .flow-diagram {
+            position: relative;
+            padding: 3rem 0;
+        }
+        
+        .flow-step {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .flow-step:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        
+        .flow-step-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 3rem;
+            color: white;
+        }
+        
+        .step-1 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .step-2 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .step-3 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .step-4 { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .step-5 { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .step-6 { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
+        
+        /* חיצים בין שלבים */
+        .flow-arrow {
+            font-size: 3rem;
+            color: var(--primary-color);
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        /* תת-תהליכים */
+        .sub-process {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            border-right: 3px solid var(--info-color);
+        }
+        
+        .sub-process-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .sub-process-item i {
+            font-size: 1.5rem;
+            margin-left: 1rem;
+            color: var(--info-color);
+        }
+        
+        /* סטטיסטיקות */
+        .stat-box {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-box:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .stat-label {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+        
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            right: 50px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--primary-color);
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-right: 70px;
+            margin-bottom: 2rem;
+        }
+        
+        .timeline-icon {
+            position: absolute;
+            right: 30px;
+            top: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        
+        /* לחצני פעולה */
+        .action-btn {
+            border-radius: 25px;
+            padding: 0.5rem 2rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        /* אנימציה */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-fade-in {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        /* כרטיסיות KPI */
+        .kpi-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: rgba(44, 90, 160, 0.1);
+            border-radius: 50%;
+            transform: translate(30px, -30px);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .flow-step {
+                margin-bottom: 2rem;
+            }
+            
+            .timeline::before {
+                right: 30px;
+            }
+            
+            .timeline-item {
+                padding-right: 50px;
+            }
+            
+            .timeline-icon {
+                right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- כותרת ראשית -->
+    <div class="main-header">
+        <div class="container">
+            <h1 class="animate-fade-in">
+                <i class="bi bi-diagram-3-fill me-3"></i>
+                תהליך ניהול רכש וספקים מקצה לקצה
+            </h1>
+            <p class="animate-fade-in">מערכת ERP מתקדמת לניהול שרשרת האספקה</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- סטטיסטיקות ראשיות -->
+        <div class="row mb-5">
+            <div class="col-md-3 mb-3">
+                <div class="stat-box animate-fade-in">
+                    <i class="bi bi-building text-primary mb-3" style="font-size: 2.5rem;"></i>
+                    <div class="stat-number">248</div>
+                    <div class="stat-label">ספקים פעילים</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stat-box animate-fade-in" style="animation-delay: 0.1s;">
+                    <i class="bi bi-cart-check text-success mb-3" style="font-size: 2.5rem;"></i>
+                    <div class="stat-number">1,542</div>
+                    <div class="stat-label">הזמנות החודש</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stat-box animate-fade-in" style="animation-delay: 0.2s;">
+                    <i class="bi bi-graph-up text-info mb-3" style="font-size: 2.5rem;"></i>
+                    <div class="stat-number">18%</div>
+                    <div class="stat-label">חיסכון שנתי</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stat-box animate-fade-in" style="animation-delay: 0.3s;">
+                    <i class="bi bi-award text-warning mb-3" style="font-size: 2.5rem;"></i>
+                    <div class="stat-number">96%</div>
+                    <div class="stat-label">שביעות רצון</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- תרשים זרימה ראשי -->
+        <h2 class="text-center mb-5">
+            <i class="bi bi-diagram-2 me-2"></i>
+            תהליך הרכש המלא - מבקשה ועד תשלום
+        </h2>
+        
+        <div class="flow-diagram">
+            <!-- שלב 1: דרישה -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="flow-step animate-fade-in">
+                        <div class="flow-step-icon step-1">
+                            <i class="bi bi-lightbulb"></i>
+                        </div>
+                        <h3>שלב 1: זיהוי צורך ודרישה</h3>
+                        <p class="text-muted mb-3">תחילת התהליך - זיהוי הצורך ויצירת דרישת רכש</p>
+                        
+                        <div class="sub-process">
+                            <div class="sub-process-item">
+                                <i class="bi bi-check-circle-fill"></i>
+                                <span>זיהוי מחסור במלאי או צורך חדש</span>
+                            </div>
+                            <div class="sub-process-item">
+                                <i class="bi bi-check-circle-fill"></i>
+                                <span>יצירת דרישת רכש (Purchase Requisition)</span>
+                            </div>
+                            <div class="sub-process-item">
+                                <i class="bi bi-check-circle-fill"></i>
+                                <span>אישור מנהל מחלקה</span>
+                            </div>
+                            <div class="sub-process-item">
+                                <i class="bi bi-check-circle-fill"></i>
+                                <span>בדיקת תקציב זמין</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <button class="btn btn-primary action-btn">
+                                <i class="bi bi-plus-circle me-2"></i>
+                                צור דרישת רכש
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- חץ -->
+            <div class="flow-arrow animate-fade-in">
+                <i class="bi bi-arrow-down-circle"></i>
+            </div>
+
+            <!-- שלב 2: ניהול ספקים -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="flow-step animate-fade-in" style="animation-delay: 0.1s;">
+                        <div class="flow-step-icon step-2">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <h3>שלב 2: בחירת ספקים וניהול מאגר</h3>
+                        <p class="text-muted mb-3">ניהול מאגר ספקים ובחירת ספקים מתאימים</p>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="sub-process">
+                                    <h5 class="text-primary mb-3">
+                                        <i class="bi bi-person-plus me-2"></i>
+                                        קליטת ספק חדש
+                                    </h5>
+                                    <div class="sub-process-item">
+                                        <i class="bi bi-1-circle-fill"></i>
+                                        <span>מילוי טופס רישום</span>
+                                    </div>
+                                    <div class="sub-process-item">
+                                        <i class="bi bi-2-circle-fill"></i>
+                                        <span>בדיקת מסמכים</span>
+                                    </div>
+                                    <div class="sub-process-item">
+                                        <i class="bi bi-3-circle-fill"></i>
+                                        <span>אימות פרטים</span>
+                                    </div>
+                                    <div class="sub-process-item">
+                                        <i class="bi bi-4-circle-fill"></i>
+                                        <span>הערכת סיכונים</span>
+                                    </div>
+                                    <div class="sub-process-item">
+                                        <i class="bi bi-5-circle-fill"></i>
+                                        <span>אישור סופי</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="sub-process">
+                                    <h5 class="text-info mb-3">
+                                        <i class="bi bi-search me-2"></i>
+                                        בחירת ספקים קיימים
+                                    </h5>
+                                    <div class="sub-process-item">
+                                        <i class="bi bi-star-fill"></i>
+                                        <span>סינון לפי קטגוריה</span>
+                                    </div>
+                                    <div class="sub-process-item">
+                                        <i class="bi bi-star-fill"></i>
+                                        <span>דירוג ביצועים</span>
+                                    </div>
+                                    <div class="sub-process-item">
+                                        <i class="bi bi-star-fill"></i>
+                                        <span>זמינות ומלאי</span>
+                                    </div>
+                                    <div class="sub-process-item">
+                                        <i class="bi bi-star-fill"></i>
+                                        <span>תנאי סחר</span>
+                                    </div>
+                                    <div class="sub-process-item">
+                                        <i class="bi bi-star-fill"></i>
+                                        <span>היסטוריית רכש</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <button class="btn btn-danger action-btn me-2">
+                                <i class="bi bi-person-plus me-2"></i>
+                                הוסף ספק חדש
+                            </button>
+                            <button class="btn btn-info action-btn">
+                                <i class="bi bi-search me-2"></i>
+                                חפש ספקים
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- חץ -->
+            <div class="flow-arrow animate-fade-in">
+                <i class="bi bi-arrow-down-circle"></i>
+            </div>
+
+            <!-- שלב 3: בקשת הצעות מחיר -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="flow-step animate-fade-in" style="animation-delay: 0.2s;">
+                        <div class="flow-step-icon step-3">
+                            <i class="bi bi-envelope-paper"></i>
+                        </div>
+                        <h3>שלב 3: ניהול הצעות מחיר ומכרזים</h3>
+                        <p class="text-muted mb-3">תהליך קבלת והשוואת הצעות מחיר</p>
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="kpi-card">
+                                    <h5 class="text-primary">
+                                        <i class="bi bi-file-earmark-text me-2"></i>
+                                        RFI
+                                    </h5>
+                                    <p>בקשה למידע</p>
+                                    <small class="text-muted">חקר שוק ראשוני</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="kpi-card">
+                                    <h5 class="text-success">
+                                        <i class="bi bi-file-earmark-medical me-2"></i>
+                                        RFQ
+                                    </h5>
+                                    <p>בקשה להצעת מחיר</p>
+                                    <small class="text-muted">השוואת מחירים</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="kpi-card">
+                                    <h5 class="text-warning">
+                                        <i class="bi bi-file-earmark-ruled me-2"></i>
+                                        RFP
+                                    </h5>
+                                    <p>בקשה להצעה</p>
+                                    <small class="text-muted">מכרז מלא</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="sub-process mt-4">
+                            <h5 class="mb-3">תהליך השוואת הצעות:</h5>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ספק</th>
+                                            <th>מחיר ליחידה</th>
+                                            <th>זמן אספקה</th>
+                                            <th>איכות</th>
+                                            <th>ציון משוקלל</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>ספק א'</td>
+                                            <td>₪120</td>
+                                            <td>5 ימים</td>
+                                            <td>⭐⭐⭐⭐⭐</td>
+                                            <td><span class="badge bg-success">95</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>ספק ב'</td>
+                                            <td>₪115</td>
+                                            <td>7 ימים</td>
+                                            <td>⭐⭐⭐⭐</td>
+                                            <td><span class="badge bg-warning">88</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>ספק ג'</td>
+                                            <td>₪125</td>
+                                            <td>3 ימים</td>
+                                            <td>⭐⭐⭐</td>
+                                            <td><span class="badge bg-danger">72</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <button class="btn btn-success action-btn">
+                                <i class="bi bi-calculator me-2"></i>
+                                השווה הצעות
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- חץ -->
+            <div class="flow-arrow animate-fade-in">
+                <i class="bi bi-arrow-down-circle"></i>
+            </div>
+
+            <!-- שלב 4: הזמנת רכש -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="flow-step animate-fade-in" style="animation-delay: 0.3s;">
+                        <div class="flow-step-icon step-4">
+                            <i class="bi bi-cart-plus"></i>
+                        </div>
+                        <h3>שלב 4: יצירת הזמנת רכש</h3>
+                        <p class="text-muted mb-3">אישור והפקת הזמנת רכש רשמית</p>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="sub-process">
+                                    <h5 class="text-success mb-3">פרטי ההזמנה:</h5>
+                                    <div class="sub-process-item">
+                                        <i class="bi bi-bag-check"></i>
+                                        <span>מספר הזמנה: PO-2024-1542</span>
+                                    </div>
+                                    <div class="sub-process-item">
+                                        <i class="bi bi-building"></i>
+                                        <span>ספק: חברת אלקטרוניקה בע"מ</span>
+                                    </div>
+                                    <div class="sub-process-item">
+                                        <i class="bi bi-currency-dollar"></i>
+                                        <span>סכום כולל: ₪45,000 + מע"מ</span>
+                                    </div>
+                                    <div class="sub-process-item">
+                                        <i class="bi bi-calendar-check"></i>
+                                        <span>תאריך אספקה: 15/02/2024</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="sub-process">
+                                    <h5 class="text-info mb-3">מסלול אישורים:</h5>
+                                    <div class="timeline">
+                                        <div class="timeline-item">
+                                            <div class="timeline-icon">
+                                                <i class="bi bi-person"></i>
+                                            </div>
+                                            <div>
+                                                <strong>מנהל מחלקה</strong>
+                                                <span class="badge bg-success ms-2">אושר</span>
+                                                <p class="text-muted small mb-0">עד ₪50,000</p>
+                                            </div>
+                                        </div>
+                                        <div class="timeline-item">
+                                            <div class="timeline-icon">
+                                                <i class="bi bi-person-workspace"></i>
+                                            </div>
+                                            <div>
+                                                <strong>סמנכ"ל רכש</strong>
+                                                <span class="badge bg-warning ms-2">ממתין</span>
+                                                <p class="text-muted small mb-0">₪50,000 - ₪250,000</p>
+                                            </div>
+                                        </div>
+                                        <div class="timeline-item">
+                                            <div class="timeline-icon bg-secondary">
+                                                <i class="bi bi-person-badge"></i>
+                                            </div>
+                                            <div>
+                                                <strong>מנכ"ל</strong>
+                                                <span class="badge bg-secondary ms-2">לא נדרש</span>
+                                                <p class="text-muted small mb-0">מעל ₪250,000</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <button class="btn btn-success action-btn me-2">
+                                <i class="bi bi-check-circle me-2"></i>
+                                אשר הזמנה
+                            </button>
+                            <button class="btn btn-secondary action-btn">
+                                <i class="bi bi-printer me-2"></i>
+                                הדפס
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- חץ -->
+            <div class="flow-arrow animate-fade-in">
+                <i class="bi bi-arrow-down-circle"></i>
+            </div>
+
+            <!-- שלב 5: קליטת סחורה -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="flow-step animate-fade-in" style="animation-delay: 0.4s;">
+                        <div class="flow-step-icon step-5">
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+                        <h3>שלב 5: קליטת סחורה ובקרת איכות</h3>
+                        <p class="text-muted mb-3">קבלת המשלוח, בדיקה וקליטה למערכת</p>
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="process-card">
+                                    <div class="process-icon icon-warning mx-auto">
+                                        <i class="bi bi-truck"></i>
+                                    </div>
+                                    <h5>קבלת משלוח</h5>
+                                    <ul class="list-unstyled">
+                                        <li><i class="bi bi-check2 text-success me-2"></i>אימות תעודת משלוח</li>
+                                        <li><i class="bi bi-check2 text-success me-2"></i>בדיקת אריזות</li>
+                                        <li><i class="bi bi-check2 text-success me-2"></i>ספירת כמויות</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="process-card">
+                                    <div class="process-icon icon-info mx-auto">
+                                        <i class="bi bi-clipboard-check"></i>
+                                    </div>
+                                    <h5>בקרת איכות</h5>
+                                    <ul class="list-unstyled">
+                                        <li><i class="bi bi-check2 text-success me-2"></i>בדיקת התאמה למפרט</li>
+                                        <li><i class="bi bi-check2 text-success me-2"></i>בדיקות איכות</li>
+                                        <li><i class="bi bi-check2 text-success me-2"></i>תיעוד ליקויים</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="process-card">
+                                    <div class="process-icon icon-success mx-auto">
+                                        <i class="bi bi-database-check"></i>
+                                    </div>
+                                    <h5>קליטה למערכת</h5>
+                                    <ul class="list-unstyled">
+                                        <li><i class="bi bi-check2 text-success me-2"></i>עדכון מלאי</li>
+                                        <li><i class="bi bi-check2 text-success me-2"></i>סריקת ברקודים</li>
+                                        <li><i class="bi bi-check2 text-success me-2"></i>הקצאת מיקום</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-warning mt-3" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <strong>התראה:</strong> נמצאו 2 פריטים פגומים - נפתח תהליך החזרה לספק
+                        </div>
+                        
+                        <div class="mt-3">
+                            <button class="btn btn-warning action-btn me-2">
+                                <i class="bi bi-camera me-2"></i>
+                                צלם תיעוד
+                            </button>
+                            <button class="btn btn-success action-btn">
+                                <i class="bi bi-check-all me-2"></i>
+                                אשר קליטה
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- חץ -->
+            <div class="flow-arrow animate-fade-in">
+                <i class="bi bi-arrow-down-circle"></i>
+            </div>
+
+            <!-- שלב 6: תשלום וסגירה -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="flow-step animate-fade-in" style="animation-delay: 0.5s;">
+                        <div class="flow-step-icon step-6">
+                            <i class="bi bi-credit-card"></i>
+                        </div>
+                        <h3>שלב 6: תשלום וסגירת מעגל</h3>
+                        <p class="text-muted mb-3">התאמת חשבונית, תשלום והערכת ספק</p>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="sub-process">
+                                    <h5 class="text-primary mb-3">
+                                        <i class="bi bi-receipt me-2"></i>
+                                        התאמת 3 כיוונים
+                                    </h5>
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>מסמך</th>
+                                                <th>סכום</th>
+                                                <th>סטטוס</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><i class="bi bi-file-earmark-text me-2"></i>הזמנת רכש</td>
+                                                <td>₪45,000</td>
+                                                <td><i class="bi bi-check-circle-fill text-success"></i></td>
+                                            </tr>
+                                            <tr>
+                                                <td><i class="bi bi-box-seam me-2"></i>תעודת משלוח</td>
+                                                <td>₪45,000</td>
+                                                <td><i class="bi bi-check-circle-fill text-success"></i></td>
+                                            </tr>
+                                            <tr>
+                                                <td><i class="bi bi-receipt-cutoff me-2"></i>חשבונית</td>
+                                                <td>₪45,000</td>
+                                                <td><i class="bi bi-check-circle-fill text-success"></i></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="sub-process">
+                                    <h5 class="text-success mb-3">
+                                        <i class="bi bi-star me-2"></i>
+                                        הערכת ביצועי ספק
+                                    </h5>
+                                    <div class="mb-3">
+                                        <label>איכות המוצר</label>
+                                        <div class="text-warning">
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star"></i>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>זמן אספקה</label>
+                                        <div class="text-warning">
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>שירות</label>
+                                        <div class="text-warning">
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <button class="btn btn-primary action-btn me-2">
+                                <i class="bi bi-credit-card me-2"></i>
+                                בצע תשלום
+                            </button>
+                            <button class="btn btn-secondary action-btn">
+                                <i class="bi bi-file-earmark-pdf me-2"></i>
+                                הפק דוח
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- תהליכים נוספים -->
+        <h2 class="text-center mt-5 mb-4">
+            <i class="bi bi-gear me-2"></i>
+            תהליכי תמיכה וניהול
+        </h2>
+
+        <div class="row">
+            <!-- ניהול חוזים -->
+            <div class="col-md-4 mb-4">
+                <div class="process-card">
+                    <div class="process-icon icon-primary mx-auto">
+                        <i class="bi bi-file-earmark-lock"></i>
+                    </div>
+                    <h4>ניהול חוזים</h4>
+                    <p class="text-muted">ניהול מחזור חיי חוזה מלא</p>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-arrow-left-circle me-2 text-primary"></i>יצירת חוזים</li>
+                        <li><i class="bi bi-arrow-left-circle me-2 text-primary"></i>מעקב תוקף</li>
+                        <li><i class="bi bi-arrow-left-circle me-2 text-primary"></i>חידושים אוטומטיים</li>
+                        <li><i class="bi bi-arrow-left-circle me-2 text-primary"></i>ניהול SLA</li>
+                    </ul>
+                    <button class="btn btn-outline-primary btn-sm">
+                        למד עוד <i class="bi bi-arrow-left"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ניתוח הוצאות -->
+            <div class="col-md-4 mb-4">
+                <div class="process-card">
+                    <div class="process-icon icon-success mx-auto">
+                        <i class="bi bi-graph-up-arrow"></i>
+                    </div>
+                    <h4>ניתוח הוצאות</h4>
+                    <p class="text-muted">Business Intelligence מתקדם</p>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-arrow-left-circle me-2 text-success"></i>Spend Analysis</li>
+                        <li><i class="bi bi-arrow-left-circle me-2 text-success"></i>מעקב חסכונות</li>
+                        <li><i class="bi bi-arrow-left-circle me-2 text-success"></i>תחזיות והמלצות</li>
+                        <li><i class="bi bi-arrow-left-circle me-2 text-success"></i>דוחות מנהלים</li>
+                    </ul>
+                    <button class="btn btn-outline-success btn-sm">
+                        למד עוד <i class="bi bi-arrow-left"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ניהול סיכונים -->
+            <div class="col-md-4 mb-4">
+                <div class="process-card">
+                    <div class="process-icon icon-danger mx-auto">
+                        <i class="bi bi-shield-exclamation"></i>
+                    </div>
+                    <h4>ניהול סיכונים</h4>
+                    <p class="text-muted">זיהוי ומיטיגציה של סיכונים</p>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-arrow-left-circle me-2 text-danger"></i>הערכת סיכונים</li>
+                        <li><i class="bi bi-arrow-left-circle me-2 text-danger"></i>ניטור רציף</li>
+                        <li><i class="bi bi-arrow-left-circle me-2 text-danger"></i>תוכניות חירום</li>
+                        <li><i class="bi bi-arrow-left-circle me-2 text-danger"></i>ביטוחים וערבויות</li>
+                    </ul>
+                    <button class="btn btn-outline-danger btn-sm">
+                        למד עוד <i class="bi bi-arrow-left"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPIs ומדדים -->
+        <h2 class="text-center mt-5 mb-4">
+            <i class="bi bi-speedometer2 me-2"></i>
+            מדדי ביצוע מרכזיים (KPIs)
+        </h2>
+
+        <div class="row">
+            <div class="col-md-3 mb-3">
+                <div class="kpi-card text-center">
+                    <h3 class="text-primary">3.2</h3>
+                    <p class="mb-0">ימים ממוצע</p>
+                    <small class="text-muted">זמן מחזור רכש</small>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="kpi-card text-center">
+                    <h3 class="text-success">94%</h3>
+                    <p class="mb-0">עמידה בזמנים</p>
+                    <small class="text-muted">אספקות בזמן</small>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="kpi-card text-center">
+                    <h3 class="text-warning">₪2.3M</h3>
+                    <p class="mb-0">חיסכון שנתי</p>
+                    <small class="text-muted">מול תקציב</small>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="kpi-card text-center">
+                    <h3 class="text-info">4.6/5</h3>
+                    <p class="mb-0">ציון ממוצע</p>
+                    <small class="text-muted">שביעות רצון ספקים</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- סיכום -->
+        <div class="alert alert-info mt-5" role="alert">
+            <h4 class="alert-heading">
+                <i class="bi bi-info-circle me-2"></i>
+                סיכום התהליך
+            </h4>
+            <p>תהליך ניהול הרכש והספקים הוא תהליך מורכב ורב-שלבי הדורש תיאום בין מחלקות רבות בארגון.
+            המערכת מספקת כלים מתקדמים לניהול כל שלב בתהליך, החל מזיהוי הצורך ועד לתשלום הסופי והערכת הספק.</p>
+            <hr>
+            <p class="mb-0">
+                <strong>יתרונות המערכת:</strong>
+                אוטומציה של תהליכים • שקיפות מלאה • בקרה ומעקב • חיסכון בעלויות • שיפור מתמיד
+            </p>
+        </div>
+
+        <!-- כפתורי פעולה תחתונים -->
+        <div class="text-center my-5">
+            <button class="btn btn-lg btn-primary action-btn me-3">
+                <i class="bi bi-play-circle me-2"></i>
+                התחל תהליך רכש חדש
+            </button>
+            <button class="btn btn-lg btn-outline-secondary action-btn">
+                <i class="bi bi-book me-2"></i>
+                מדריך למשתמש
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">
+                <i class="bi bi-c-circle me-2"></i>
+                2024 מערכת ניהול רכש וספקים ERP | כל הזכויות שמורות
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Animation on scroll -->
+    <script>
+        // הוספת אנימציה בגלילה
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // צפייה בכל האלמנטים עם אנימציה
+        document.querySelectorAll('.animate-fade-in').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s ease-out';
+            observer.observe(el);
+        });
+
+        // הוספת אפקט hover לכרטיסיות
+        document.querySelectorAll('.process-card, .flow-step, .kpi-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>

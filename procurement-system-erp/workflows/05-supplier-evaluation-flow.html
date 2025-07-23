@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תהליך הערכת ספקים - Flow</title>
+    
+    <!-- Bootstrap 5 RTL -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Google Fonts - Rubik -->
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Rubik', sans-serif;
+            background: #f8f9fa;
+        }
+        
+        .flow-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .flow-header {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            margin-bottom: 3rem;
+            box-shadow: 0 20px 40px rgba(17, 153, 142, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .flow-header::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .evaluation-phase {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            position: relative;
+            transition: all 0.4s ease;
+        }
+        
+        .evaluation-phase:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+        }
+        
+        .phase-number {
+            position: absolute;
+            top: -20px;
+            right: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .supplier-score-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: white;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            position: relative;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .score-circle.excellent {
+            color: #10b981;
+            box-shadow: 0 0 0 10px rgba(16, 185, 129, 0.1);
+        }
+        
+        .score-circle.good {
+            color: #3b82f6;
+            box-shadow: 0 0 0 10px rgba(59, 130, 246, 0.1);
+        }
+        
+        .score-circle.average {
+            color: #f59e0b;
+            box-shadow: 0 0 0 10px rgba(245, 158, 11, 0.1);
+        }
+        
+        .score-circle.poor {
+            color: #ef4444;
+            box-shadow: 0 0 0 10px rgba(239, 68, 68, 0.1);
+        }
+        
+        .criteria-item {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+        
+        .criteria-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+        }
+        
+        .rating-stars {
+            display: inline-flex;
+            gap: 0.25rem;
+        }
+        
+        .rating-stars i {
+            color: #e5e7eb;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .rating-stars i.filled {
+            color: #fbbf24;
+        }
+        
+        .rating-stars i:hover {
+            transform: scale(1.2);
+        }
+        
+        .performance-chart {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+        
+        .chart-bar {
+            background: #e5e7eb;
+            border-radius: 10px;
+            height: 25px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+        
+        .chart-bar-fill {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to left, #667eea, #764ba2);
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+        
+        .chart-bar-fill.excellent {
+            background: linear-gradient(to left, #10b981, #34d399);
+        }
+        
+        .chart-bar-fill.good {
+            background: linear-gradient(to left, #3b82f6, #60a5fa);
+        }
+        
+        .chart-bar-fill.average {
+            background: linear-gradient(to left, #f59e0b, #fbbf24);
+        }
+        
+        .timeline-vertical {
+            position: relative;
+            padding-right: 40px;
+        }
+        
+        .timeline-vertical::before {
+            content: '';
+            position: absolute;
+            right: 15px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, #667eea, #764ba2);
+        }
+        
+        .timeline-event {
+            position: relative;
+            padding-bottom: 2rem;
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            right: 10px;
+            top: 5px;
+            width: 13px;
+            height: 13px;
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 50%;
+        }
+        
+        .evaluation-actions {
+            background: #f3f4f6;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .action-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .action-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .action-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .action-improve { background: #dbeafe; color: #1e40af; }
+        .action-warning { background: #fed7aa; color: #92400e; }
+        .action-terminate { background: #fee2e2; color: #991b1b; }
+        .action-reward { background: #d1fae5; color: #065f46; }
+        
+        .comparison-table {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+        
+        .comparison-table th {
+            background: #f3f4f6;
+            font-weight: 600;
+            padding: 1rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .trend-indicator {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .trend-up {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .trend-down {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .trend-stable {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+        
+        .recommendation-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="flow-container">
+        <!-- Header -->
+        <div class="flow-header text-center">
+            <h1 class="display-4 fw-bold mb-3">
+                <i class="bi bi-graph-up-arrow me-3"></i>
+                תהליך הערכת ספקים
+            </h1>
+            <p class="lead mb-0">
+                הערכה תקופתית של ביצועי ספקים וקבלת החלטות
+            </p>
+        </div>
+
+        <!-- Supplier Info -->
+        <div class="alert alert-info border-0 shadow-sm mb-4">
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <div class="score-circle good">4.2</div>
+                </div>
+                <div class="col">
+                    <h5 class="mb-1">מחשבים ורשתות פרו בע"מ</h5>
+                    <p class="mb-0">
+                        <span class="badge bg-primary me-2">ספק ראשי</span>
+                        <span class="badge bg-light text-dark me-2">3 שנים במערכת</span>
+                        <span class="badge bg-light text-dark">127 הזמנות</span>
+                    </p>
+                </div>
+                <div class="col-auto">
+                    <div class="text-end">
+                        <div class="text-muted small">מועד הערכה אחרונה</div>
+                        <div class="fw-bold">15/10/2023</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phase 1: Data Collection -->
+        <div class="evaluation-phase">
+            <div class="phase-number">1</div>
+            
+            <h3 class="mb-4">
+                <i class="bi bi-clipboard-data text-primary me-2"></i>
+                איסוף נתונים וסטטיסטיקות
+            </h3>
+            
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="supplier-score-card">
+                        <i class="bi bi-calendar-check fs-1 text-primary mb-3"></i>
+                        <h6>עמידה בזמנים</h6>
+                        <div class="h3 mb-0">92%</div>
+                        <small class="text-muted">מתוך 45 משלוחים</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="supplier-score-card">
+                        <i class="bi bi-box-seam fs-1 text-success mb-3"></i>
+                        <h6>איכות מוצרים</h6>
+                        <div class="h3 mb-0">4.5/5</div>
+                        <small class="text-muted">ממוצע דירוגים</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="supplier-score-card">
+                        <i class="bi bi-headset fs-1 text-info mb-3"></i>
+                        <h6>שירות לקוחות</h6>
+                        <div class="h3 mb-0">4.8/5</div>
+                        <small class="text-muted">זמן תגובה: 2 שעות</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="supplier-score-card">
+                        <i class="bi bi-currency-dollar fs-1 text-warning mb-3"></i>
+                        <h6>תחרותיות מחיר</h6>
+                        <div class="h3 mb-0">3.8/5</div>
+                        <small class="text-muted">השוואה לשוק</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="performance-chart">
+                <h5 class="mb-4">ביצועים לאורך זמן</h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="text-muted small">רבעון 1</label>
+                        <div class="chart-bar">
+                            <div class="chart-bar-fill excellent" style="width: 88%"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-muted small">רבעון 2</label>
+                        <div class="chart-bar">
+                            <div class="chart-bar-fill excellent" style="width: 92%"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-muted small">רבעון 3</label>
+                        <div class="chart-bar">
+                            <div class="chart-bar-fill good" style="width: 85%"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-muted small">רבעון 4</label>
+                        <div class="chart-bar">
+                            <div class="chart-bar-fill good" style="width: 90%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phase 2: Detailed Evaluation -->
+        <div class="evaluation-phase">
+            <div class="phase-number">2</div>
+            
+            <h3 class="mb-4">
+                <i class="bi bi-star-fill text-warning me-2"></i>
+                הערכה מפורטת לפי קריטריונים
+            </h3>
+            
+            <div class="criteria-item">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h6 class="mb-1">איכות המוצרים</h6>
+                        <p class="text-muted mb-0">איכות, אמינות ועמידה בסטנדרטים</p>
+                    </div>
+                    <div class="col-auto">
+                        <div class="rating-stars" data-rating="4">
+                            <i class="bi bi-star-fill filled"></i>
+                            <i class="bi bi-star-fill filled"></i>
+                            <i class="bi bi-star-fill filled"></i>
+                            <i class="bi bi-star-fill filled"></i>
+                            <i class="bi bi-star"></i>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <span class="badge bg-success">4.5/5</span>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <small class="text-muted">הערות: איכות גבוהה, אריזה מעולה, מוצרים תואמים למפרט</small>
+                </div>
+            </div>
+            
+            <div class="criteria-item">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h6 class="mb-1">זמני אספקה</h6>
+                        <p class="text-muted mb-0">עמידה בלוחות זמנים וגמישות</p>
+                    </div>
+                    <div class="col-auto">
+                        <div class="rating-stars" data-rating="4">
+                            <i class="bi bi-star-fill filled"></i>
+                            <i class="bi bi-star-fill filled"></i>
+                            <i class="bi bi-star-fill filled"></i>
+                            <i class="bi bi-star-fill filled"></i>
+                            <i class="bi bi-star"></i>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <span class="badge bg-success">4.2/5</span>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <small class="text-muted">הערות: בדרך כלל בזמן, מספר איחורים בתקופת החגים</small>
+                </div>
+            </div>
+            
+            <div class="criteria-item">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h6 class="mb-1">שירות לקוחות</h6>
+                        <p class="text-muted mb-0">זמינות, מקצועיות ופתרון בעיות</p>
+                    </div>
+                    <div class="col-auto">
+                        <div class="rating-stars" data-rating="5">
+                            <i class="bi bi-star-fill filled"></i>
+                            <i class="bi bi-star-fill filled"></i>
+                            <i class="bi bi-star-fill filled"></i>
+                            <i class="bi bi-star-fill filled"></i>
+                            <i class="bi bi-star-fill filled"></i>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <span class="badge bg-success">4.8/5</span>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <small class="text-muted">הערות: שירות מצוין, נציגים מקצועיים, תגובה מהירה</small>
+                </div>
+            </div>
+            
+            <div class="criteria-item">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h6 class="mb-1">מחירים ותנאי סחר</h6>
+                        <p class="text-muted mb-0">תחרותיות, גמישות והנחות</p>
+                    </div>
+                    <div class="col-auto">
+                        <div class="rating-stars" data-rating="3">
+                            <i class="bi bi-star-fill filled"></i>
+                            <i class="bi bi-star-fill filled"></i>
+                            <i class="bi bi-star-fill filled"></i>
+                            <i class="bi bi-star"></i>
+                            <i class="bi bi-star"></i>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <span class="badge bg-warning">3.8/5</span>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <small class="text-muted">הערות: מחירים בינוניים, יש ספקים זולים יותר, תנאי תשלום טובים</small>
+                </div>
+            </div>
+            
+            <div class="criteria-item">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h6 class="mb-1">תיעוד ודיוק</h6>
+                        <p class="text-muted mb-0">חשבוניות, תעודות משלוח ומסמכים</p>
+                    </div>
+                    <div class="col-auto">
+                        <div class="rating-stars" data-rating="5">
+                            <i class="bi bi-star-fill filled"></i>
+                            <i class="bi bi-star-fill filled"></i>
+                            <i class="bi bi-star-fill filled"></i>
+                            <i class="bi bi-star-fill filled"></i>
+                            <i class="bi bi-star-fill filled"></i>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <span class="badge bg-success">4.6/5</span>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <small class="text-muted">הערות: תיעוד מסודר, חשבוניות מדויקות, מסמכים זמינים דיגיטלית</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phase 3: Comparison -->
+        <div class="evaluation-phase">
+            <div class="phase-number">3</div>
+            
+            <h3 class="mb-4">
+                <i class="bi bi-bar-chart-line text-info me-2"></i>
+                השוואה וניתוח מגמות
+            </h3>
+            
+            <div class="comparison-table mb-4">
+                <div class="table-responsive">
+                    <table class="table mb-0">
+                        <thead>
+                            <tr>
+                                <th>קריטריון</th>
+                                <th>ציון נוכחי</th>
+                                <th>ציון קודם</th>
+                                <th>ממוצע בקטגוריה</th>
+                                <th>מגמה</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>איכות מוצרים</td>
+                                <td><strong>4.5</strong></td>
+                                <td>4.3</td>
+                                <td>4.2</td>
+                                <td>
+                                    <span class="trend-indicator trend-up">
+                                        <i class="bi bi-arrow-up me-1"></i>+0.2
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>זמני אספקה</td>
+                                <td><strong>4.2</strong></td>
+                                <td>4.5</td>
+                                <td>4.0</td>
+                                <td>
+                                    <span class="trend-indicator trend-down">
+                                        <i class="bi bi-arrow-down me-1"></i>-0.3
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>שירות לקוחות</td>
+                                <td><strong>4.8</strong></td>
+                                <td>4.7</td>
+                                <td>4.1</td>
+                                <td>
+                                    <span class="trend-indicator trend-up">
+                                        <i class="bi bi-arrow-up me-1"></i>+0.1
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>מחירים</td>
+                                <td><strong>3.8</strong></td>
+                                <td>3.8</td>
+                                <td>4.0</td>
+                                <td>
+                                    <span class="trend-indicator trend-stable">
+                                        <i class="bi bi-dash me-1"></i>יציב
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="mb-3">נקודות חוזק</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            שירות לקוחות מעולה - מעל הממוצע בענף
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            איכות מוצרים גבוהה ועקבית
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            תיעוד מסודר ומדויק
+                        </li>
+                        <li>
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            גמישות בתנאי תשלום
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="mb-3">נקודות לשיפור</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="bi bi-exclamation-circle-fill text-warning me-2"></i>
+                            ירידה בעמידה בזמני אספקה
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-exclamation-circle-fill text-warning me-2"></i>
+                            מחירים פחות תחרותיים מהממוצע
+                        </li>
+                        <li>
+                            <i class="bi bi-exclamation-circle-fill text-warning me-2"></i>
+                            צורך בגיוון מוצרים
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phase 4: Decision -->
+        <div class="evaluation-phase">
+            <div class="phase-number">4</div>
+            
+            <h3 class="mb-4">
+                <i class="bi bi-clipboard-check text-success me-2"></i>
+                החלטות ופעולות
+            </h3>
+            
+            <div class="evaluation-actions">
+                <h5 class="mb-4">פעולות מומלצות</h5>
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <div class="action-card">
+                            <div class="action-icon action-improve">
+                                <i class="bi bi-graph-up"></i>
+                            </div>
+                            <h6>תוכנית שיפור</h6>
+                            <p class="text-muted small mb-0">הגדרת יעדים לשיפור ביצועים</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="action-card">
+                            <div class="action-icon action-warning">
+                                <i class="bi bi-exclamation-triangle"></i>
+                            </div>
+                            <h6>אזהרה</h6>
+                            <p class="text-muted small mb-0">התראה על נושאים הדורשים תיקון</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="action-card">
+                            <div class="action-icon action-reward">
+                                <i class="bi bi-award"></i>
+                            </div>
+                            <h6>תמריץ</h6>
+                            <p class="text-muted small mb-0">מתן בונוס או הטבות</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="action-card">
+                            <div class="action-icon action-terminate">
+                                <i class="bi bi-x-circle"></i>
+                            </div>
+                            <h6>הפסקת עבודה</h6>
+                            <p class="text-muted small mb-0">סיום התקשרות עם הספק</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="timeline-vertical mt-4">
+                <h5 class="mb-4">תוכנית פעולה</h5>
+                
+                <div class="timeline-event">
+                    <div class="timeline-dot"></div>
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body">
+                            <h6 class="card-title">פגישת משוב עם הספק</h6>
+                            <p class="text-muted mb-1">תאריך יעד: 25/01/2024</p>
+                            <p class="mb-0">הצגת תוצאות ההערכה ודיון בנקודות לשיפור</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-event">
+                    <div class="timeline-dot"></div>
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body">
+                            <h6 class="card-title">הגדרת יעדי שיפור</h6>
+                            <p class="text-muted mb-1">תאריך יעד: 01/02/2024</p>
+                            <p class="mb-0">עמידה ב-95% בזמני אספקה, הורדת מחירים ב-5%</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-event">
+                    <div class="timeline-dot"></div>
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body">
+                            <h6 class="card-title">מעקב ביניים</h6>
+                            <p class="text-muted mb-1">תאריך יעד: 01/04/2024</p>
+                            <p class="mb-0">בדיקת התקדמות ועמידה ביעדים</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-event">
+                    <div class="timeline-dot"></div>
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body">
+                            <h6 class="card-title">הערכה חוזרת</h6>
+                            <p class="text-muted mb-1">תאריך יעד: 01/07/2024</p>
+                            <p class="mb-0">הערכה מלאה לבחינת השיפור</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Final Recommendation -->
+        <div class="recommendation-box">
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <div class="score-circle bg-white text-dark">
+                        4.2
+                    </div>
+                </div>
+                <div class="col">
+                    <h4 class="text-white mb-2">המלצה סופית: המשך עבודה עם תוכנית שיפור</h4>
+                    <p class="mb-0 text-white-50">
+                        הספק מציג ביצועים טובים עם מקום לשיפור. מומלץ להמשיך את ההתקשרות תוך יישום תוכנית שיפור ממוקדת בזמני אספקה ותחרותיות מחירים. יש לקיים מעקב רבעוני ולבחון התקדמות.
+                    </p>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-light btn-lg">
+                        <i class="bi bi-check-circle me-2"></i>
+                        אשר החלטה
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Stats -->
+        <div class="row mt-5">
+            <div class="col-md-3">
+                <div class="card border-0 text-center h-100">
+                    <div class="card-body">
+                        <i class="bi bi-trophy-fill text-warning fs-1 mb-3"></i>
+                        <h5>דירוג כולל</h5>
+                        <div class="display-4 fw-bold">4.2</div>
+                        <div class="text-muted">טוב מאוד</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 text-center h-100">
+                    <div class="card-body">
+                        <i class="bi bi-graph-up-arrow text-success fs-1 mb-3"></i>
+                        <h5>מגמה</h5>
+                        <div class="display-4 fw-bold">↑</div>
+                        <div class="text-muted">שיפור קל</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 text-center h-100">
+                    <div class="card-body">
+                        <i class="bi bi-award-fill text-primary fs-1 mb-3"></i>
+                        <h5>דירוג בקטגוריה</h5>
+                        <div class="display-4 fw-bold">#3</div>
+                        <div class="text-muted">מתוך 15 ספקים</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 text-center h-100">
+                    <div class="card-body">
+                        <i class="bi bi-calendar3 text-info fs-1 mb-3"></i>
+                        <h5>הערכה הבאה</h5>
+                        <div class="display-4 fw-bold">6</div>
+                        <div class="text-muted">חודשים</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Interactive rating stars
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate phases
+            const phases = document.querySelectorAll('.evaluation-phase');
+            phases.forEach((phase, index) => {
+                setTimeout(() => {
+                    phase.style.opacity = '0';
+                    phase.style.transform = 'translateY(30px)';
+                    
+                    setTimeout(() => {
+                        phase.style.transition = 'all 0.6s ease';
+                        phase.style.opacity = '1';
+                        phase.style.transform = 'translateY(0)';
+                    }, 100);
+                }, index * 200);
+            });
+            
+            // Interactive stars
+            document.querySelectorAll('.rating-stars').forEach(stars => {
+                const starsArray = stars.querySelectorAll('i');
+                const rating = parseInt(stars.dataset.rating);
+                
+                starsArray.forEach((star, index) => {
+                    star.addEventListener('mouseenter', function() {
+                        starsArray.forEach((s, i) => {
+                            if (i <= index) {
+                                s.classList.add('filled');
+                            } else {
+                                s.classList.remove('filled');
+                            }
+                        });
+                    });
+                    
+                    star.addEventListener('click', function() {
+                        const newRating = index + 1;
+                        stars.dataset.rating = newRating;
+                        const badge = stars.closest('.criteria-item').querySelector('.badge');
+                        badge.textContent = newRating + '/5';
+                        
+                        // Update badge color
+                        badge.classList.remove('bg-success', 'bg-warning', 'bg-danger');
+                        if (newRating >= 4) badge.classList.add('bg-success');
+                        else if (newRating >= 3) badge.classList.add('bg-warning');
+                        else badge.classList.add('bg-danger');
+                    });
+                });
+                
+                stars.addEventListener('mouseleave', function() {
+                    const currentRating = parseInt(stars.dataset.rating);
+                    starsArray.forEach((s, i) => {
+                        if (i < currentRating) {
+                            s.classList.add('filled');
+                        } else {
+                            s.classList.remove('filled');
+                        }
+                    });
+                });
+            });
+            
+            // Animate chart bars
+            setTimeout(() => {
+                document.querySelectorAll('.chart-bar-fill').forEach(bar => {
+                    const width = bar.style.width;
+                    bar.style.width = '0';
+                    setTimeout(() => {
+                        bar.style.width = width;
+                    }, 100);
+                });
+            }, 1000);
+            
+            // Action cards interaction
+            document.querySelectorAll('.action-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    // Remove active state from all cards
+                    document.querySelectorAll('.action-card').forEach(c => {
+                        c.style.borderColor = 'transparent';
+                    });
+                    
+                    // Add active state to clicked card
+                    this.style.borderColor = '#667eea';
+                    
+                    // Simulate action selection
+                    const actionType = this.querySelector('h6').textContent;
+                    console.log('Selected action:', actionType);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
