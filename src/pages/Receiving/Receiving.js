@@ -757,12 +757,7 @@ ${item.notes || 'אין הערות'}
     setSearchTerm('');
     setStatusFilter('all');
     setDateRange({ from: '', to: '' });
-    showAlert(
-      'info',
-      'הסינונים נוקו',
-      `כל הסינונים בוטלו והרשימה אופסה.\n\nמוצגים כעת ${receivingData.receivingList?.length || 0} משלוחים.`,
-      'fas fa-eraser'
-    );
+    // Removed showAlert for clearing filters
   };
 
   const handleQuickFilter = (filterType) => {
@@ -772,24 +767,21 @@ ${item.notes || 'אין הערות'}
       case 'today':
         setStatusFilter('all');
         setSearchTerm('');
-        showAlert('filter', 'סינון יומי', 'מוצגים משלוחים של היום בלבד', 'fas fa-calendar-day');
+        // Removed showAlert for quick filter
         break;
       case 'urgent':
         setStatusFilter('urgent');
         setSearchTerm('');
-        const urgentCount = receivingData.receivingList?.filter(item => item.status === 'urgent').length || 0;
-        showAlert('warning', 'משלוחים דחופים', `מוצגים ${urgentCount} משלוחים דחופים הדורשים טיפול מיידי`, 'fas fa-exclamation-triangle');
+        // Removed showAlert for quick filter
         break;
       case 'overdue':
         setStatusFilter('pending');
-        const overdueCount = receivingData.receivingList?.filter(item => item.status === 'pending').length || 0;
-        showAlert('warning', 'משלוחים באיחור', `מוצגים ${overdueCount} משלוחים באיחור המחכים לקבלה`, 'fas fa-clock');
+        // Removed showAlert for quick filter
         break;
       case 'completed':
         setStatusFilter('completed');
         setSearchTerm('');
-        const completedCount = receivingData.receivingList?.filter(item => item.status === 'completed').length || 0;
-        showAlert('success', 'משלוחים שהושלמו', `מוצגים ${completedCount} משלוחים שהתקבלו בהצלחה`, 'fas fa-check-circle');
+        // Removed showAlert for quick filter
         break;
       default:
         break;
