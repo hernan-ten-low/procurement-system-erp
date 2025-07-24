@@ -1,0 +1,24 @@
+{
+  "short_name": "רכש ERP",
+  "name": "מערכת ניהול רכש וספקים",
+  "description": "מערכת ERP לניהול רכש, ספקים והזמנות",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "favicon-16x16.svg",
+      "sizes": "16x16",
+      "type": "image/svg+xml"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#00BF63",
+  "background_color": "#011939",
+  "dir": "rtl",
+  "lang": "he"
+}
