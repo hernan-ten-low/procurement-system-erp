@@ -622,7 +622,7 @@ const RFQCreate = () => {
           <div className="page-title">
             <h2>יצירת בקשה להצעת מחיר חדשה</h2>
             <nav className="breadcrumb">
-              <span>בית</span>
+              <span onClick={() => navigate('/')} style={{cursor: 'pointer'}}>בית</span>
               <i className="fas fa-chevron-left"></i>
               <span onClick={() => navigate('/rfq')} style={{cursor: 'pointer'}}>בקשות להצעת מחיר</span>
               <i className="fas fa-chevron-left"></i>

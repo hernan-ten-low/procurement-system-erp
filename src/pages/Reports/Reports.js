@@ -816,7 +816,7 @@ const Reports = () => {
           <div className="page-title">
             <h2>דוחות וניתוחים</h2>
             <nav className="breadcrumb">
-              <span>בית</span>
+              <span onClick={() => navigate('/')} style={{cursor: 'pointer'}}>בית</span>
               <i className="fas fa-chevron-left"></i>
               <span className="active">דוחות</span>
             </nav>

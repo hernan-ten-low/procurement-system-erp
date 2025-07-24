@@ -253,7 +253,7 @@ const RFQList = () => {
           <div className="page-title">
             <h2>בקשות להצעת מחיר (RFQ)</h2>
             <nav className="breadcrumb">
-              <span>בית</span>
+              <span onClick={() => navigate('/')} style={{cursor: 'pointer'}}>בית</span>
               <i className="fas fa-chevron-left"></i>
               <span className="active">בקשות להצעת מחיר</span>
             </nav>

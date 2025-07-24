@@ -10,8 +10,7 @@ const Dashboard = () => {
           <h1 className="h3 mb-0 text-gray-800">דשבורד רכש וספקים</h1>
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
-              <li className="breadcrumb-item"><a href="/">בית</a></li>
-              <li className="breadcrumb-item active">דשבורד</li>
+              <li className="breadcrumb-item active">בית</li>
             </ol>
           </nav>
         </Col>

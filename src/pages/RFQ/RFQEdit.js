@@ -21,7 +21,7 @@ const RFQEdit = () => {
           <div className="page-title">
             <h2>עריכת בקשת RFQ - {id}</h2>
             <nav className="breadcrumb">
-              <span>בית</span>
+              <span onClick={() => navigate('/')} style={{cursor: 'pointer'}}>בית</span>
               <i className="fas fa-chevron-left"></i>
               <span onClick={() => navigate('/rfq')} style={{cursor: 'pointer'}}>בקשות להצעת מחיר</span>
               <i className="fas fa-chevron-left"></i>
