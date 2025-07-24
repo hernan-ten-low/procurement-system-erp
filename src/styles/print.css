@@ -1,0 +1,343 @@
+/* Print Styles for Documents */
+
+@import './variables.css';
+
+@media print {
+  /* Reset and base styles */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  body {
+    font-size: 12pt;
+    line-height: 1.4;
+    color: #000;
+    background: #fff;
+    direction: rtl;
+    text-align: right;
+  }
+  
+  /* Hide non-essential elements */
+  .no-print,
+  .navbar,
+  .sidebar,
+  .btn,
+  .dropdown,
+  .pagination,
+  .breadcrumb,
+  .alert-dismissible .btn-close,
+  .modal-footer,
+  .card-header .btn,
+  .form-control,
+  .form-select,
+  .input-group-text {
+    display: none !important;
+  }
+  
+  /* Container and layout */
+  .container-fluid,
+  .container {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  .row {
+    margin: 0 !important;
+  }
+  
+  .col,
+  [class*="col-"] {
+    padding: 0 !important;
+  }
+  
+  /* Cards and content */
+  .card {
+    border: 1pt solid #dee2e6 !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+    margin-bottom: 1rem !important;
+  }
+  
+  .card-header {
+    background-color: #f8f9fa !important;
+    border-bottom: 1pt solid #dee2e6 !important;
+    padding: 0.5rem !important;
+    font-weight: bold;
+  }
+  
+  .card-body {
+    padding: 0.75rem !important;
+  }
+  
+  .card-footer {
+    background-color: #f8f9fa !important;
+    border-top: 1pt solid #dee2e6 !important;
+    padding: 0.5rem !important;
+  }
+  
+  /* Typography */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+    margin-bottom: 0.5rem !important;
+    margin-top: 1rem !important;
+  }
+  
+  h1 { font-size: 18pt !important; }
+  h2 { font-size: 16pt !important; }
+  h3 { font-size: 14pt !important; }
+  h4 { font-size: 13pt !important; }
+  h5 { font-size: 12pt !important; }
+  h6 { font-size: 11pt !important; }
+  
+  p {
+    margin-bottom: 0.5rem !important;
+    orphans: 3;
+    widows: 3;
+  }
+  
+  /* Tables */
+  .table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+    margin-bottom: 1rem !important;
+    direction: rtl;
+  }
+  
+  .table th,
+  .table td {
+    padding: 0.375rem !important;
+    border: 1pt solid #dee2e6 !important;
+    text-align: right !important;
+    vertical-align: top !important;
+  }
+  
+  .table th {
+    background-color: #f8f9fa !important;
+    font-weight: bold !important;
+  }
+  
+  .table-responsive {
+    overflow: visible !important;
+  }
+  
+  /* Prevent table breaks */
+  .table,
+  .table-responsive {
+    page-break-inside: avoid;
+  }
+  
+  /* If table is too long, allow breaks */
+  .table.allow-break {
+    page-break-inside: auto;
+  }
+  
+  .table.allow-break tr {
+    page-break-inside: avoid;
+  }
+  
+  /* Badges and status indicators */
+  .badge {
+    border: 1pt solid #000 !important;
+    background-color: #fff !important;
+    color: #000 !important;
+    padding: 0.125rem 0.25rem !important;
+    font-size: 9pt !important;
+    display: inline-block !important;
+  }
+  
+  /* Images and icons */
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+    page-break-inside: avoid;
+  }
+  
+  .bi::before {
+    display: none !important;
+  }
+  
+  /* Links */
+  a {
+    color: #000 !important;
+    text-decoration: none !important;
+  }
+  
+  a[href^="http"]:after {
+    content: " (" attr(href) ")";
+    font-size: 9pt;
+    color: #666;
+  }
+  
+  /* Page headers and footers */
+  .print-header {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    padding: 0.5rem;
+    border-bottom: 1pt solid #dee2e6;
+    background: #fff;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  .print-footer {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    padding: 0.5rem;
+    border-top: 1pt solid #dee2e6;
+    background: #fff;
+    text-align: center;
+    font-size: 9pt;
+  }
+  
+  /* Page breaks */
+  .page-break-before {
+    page-break-before: always !important;
+  }
+  
+  .page-break-after {
+    page-break-after: always !important;
+  }
+  
+  .page-break-inside-avoid {
+    page-break-inside: avoid !important;
+  }
+  
+  /* Specific document types */
+  
+  /* Purchase Order specific */
+  .purchase-order-header {
+    border: 2pt solid #000 !important;
+    padding: 1rem !important;
+    margin-bottom: 1rem !important;
+    text-align: center !important;
+  }
+  
+  .purchase-order-number {
+    font-size: 16pt !important;
+    font-weight: bold !important;
+  }
+  
+  .supplier-details,
+  .delivery-details {
+    border: 1pt solid #dee2e6 !important;
+    padding: 0.75rem !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  .order-totals {
+    border: 2pt solid #000 !important;
+    padding: 0.75rem !important;
+    background-color: #f8f9fa !important;
+  }
+  
+  /* Invoice specific */
+  .invoice-header {
+    text-align: center !important;
+    border-bottom: 2pt solid #000 !important;
+    padding-bottom: 1rem !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  .invoice-details {
+    display: flex !important;
+    justify-content: space-between !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  /* Report specific */
+  .report-title {
+    text-align: center !important;
+    border-bottom: 1pt solid #000 !important;
+    padding-bottom: 0.5rem !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  .report-summary {
+    background-color: #f8f9fa !important;
+    border: 1pt solid #dee2e6 !important;
+    padding: 0.75rem !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  /* Utility classes for print */
+  .print-only {
+    display: block !important;
+  }
+  
+  .print-text-center {
+    text-align: center !important;
+  }
+  
+  .print-text-right {
+    text-align: right !important;
+  }
+  
+  .print-text-left {
+    text-align: left !important;
+  }
+  
+  .print-font-bold {
+    font-weight: bold !important;
+  }
+  
+  .print-font-large {
+    font-size: 14pt !important;
+  }
+  
+  .print-border {
+    border: 1pt solid #000 !important;
+  }
+  
+  .print-border-top {
+    border-top: 1pt solid #000 !important;
+  }
+  
+  .print-border-bottom {
+    border-bottom: 1pt solid #000 !important;
+  }
+  
+  .print-bg-light {
+    background-color: #f8f9fa !important;
+  }
+  
+  .print-margin-bottom {
+    margin-bottom: 1rem !important;
+  }
+  
+  .print-padding {
+    padding: 0.75rem !important;
+  }
+  
+  /* Hebrew specific adjustments */
+  .hebrew-date {
+    direction: rtl !important;
+    text-align: right !important;
+  }
+  
+  .hebrew-number {
+    direction: ltr !important;
+    text-align: right !important;
+  }
+  
+  /* Signature areas */
+  .signature-area {
+    margin-top: 2rem !important;
+    padding-top: 1rem !important;
+    border-top: 1pt solid #000 !important;
+  }
+  
+  .signature-line {
+    border-bottom: 1pt solid #000 !important;
+    width: 200pt !important;
+    height: 20pt !important;
+    display: inline-block !important;
+    margin-left: 1rem !important;
+  }
+}

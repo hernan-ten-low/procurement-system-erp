@@ -1,0 +1,268 @@
+/* RTL Specific Fixes and Enhancements */
+
+/* Import variables */
+@import './variables.css';
+
+/* Base RTL fixes */
+body {
+  direction: rtl;
+  text-align: right;
+}
+
+/* Bootstrap RTL fixes */
+.breadcrumb-item + .breadcrumb-item::before {
+  content: "\\";
+  transform: scaleX(-1);
+}
+
+/* Custom utility classes for RTL */
+.text-start-rtl {
+  text-align: right !important;
+}
+
+.text-end-rtl {
+  text-align: left !important;
+}
+
+.float-start-rtl {
+  float: right !important;
+}
+
+.float-end-rtl {
+  float: left !important;
+}
+
+.me-rtl-auto {
+  margin-left: auto !important;
+}
+
+.ms-rtl-auto {
+  margin-right: auto !important;
+}
+
+/* Navigation fixes */
+.navbar-nav .nav-link {
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
+}
+
+.dropdown-menu {
+  text-align: right;
+}
+
+.dropdown-item {
+  text-align: right;
+}
+
+/* Table RTL fixes */
+.table th,
+.table td {
+  text-align: right;
+}
+
+.table th:first-child,
+.table td:first-child {
+  border-right: none;
+}
+
+.table th:last-child,
+.table td:last-child {
+  border-left: none;
+}
+
+/* Form RTL fixes */
+.form-label {
+  text-align: right;
+}
+
+.form-check {
+  text-align: right;
+}
+
+.form-check-input {
+  margin-right: 0;
+  margin-left: 0.25em;
+}
+
+.input-group .form-control:not(:last-child) {
+  border-left: 0;
+  border-right: var(--bs-border-width) solid var(--bs-border-color);
+}
+
+.input-group .form-control:not(:first-child) {
+  border-right: 0;
+  border-left: var(--bs-border-width) solid var(--bs-border-color);
+}
+
+/* Card RTL fixes */
+.card-header .btn {
+  margin-left: 0.25rem;
+}
+
+/* Modal RTL fixes */
+.modal-header .btn-close {
+  margin: -0.5rem auto -0.5rem -0.5rem;
+}
+
+/* Pagination RTL fixes */
+.pagination {
+  direction: ltr;
+}
+
+.page-link {
+  text-align: center;
+}
+
+/* Badge RTL fixes */
+.badge {
+  text-align: center;
+}
+
+/* Alert RTL fixes */
+.alert {
+  text-align: right;
+}
+
+.alert-dismissible .btn-close {
+  left: 0;
+  right: auto;
+}
+
+/* Icon alignments for RTL */
+.bi-chevron-left::before {
+  content: "\\f285"; /* chevron-right */
+}
+
+.bi-chevron-right::before {
+  content: "\\f284"; /* chevron-left */
+}
+
+.bi-chevron-double-left::before {
+  content: "\\f281"; /* chevron-double-right */
+}
+
+.bi-chevron-double-right::before {
+  content: "\\f280"; /* chevron-double-left */
+}
+
+/* Toast RTL fixes */
+.toast {
+  text-align: right;
+}
+
+.toast-header {
+  text-align: right;
+}
+
+/* Offcanvas RTL fixes */
+.offcanvas-start {
+  right: 0;
+  left: auto;
+  border-left: var(--bs-offcanvas-border-width) solid var(--bs-offcanvas-border-color);
+  border-right: 0;
+  transform: translateX(100%);
+}
+
+.offcanvas-end {
+  left: 0;
+  right: auto;
+  border-right: var(--bs-offcanvas-border-width) solid var(--bs-offcanvas-border-color);
+  border-left: 0;
+  transform: translateX(-100%);
+}
+
+/* Progress bar RTL */
+.progress-bar {
+  text-align: center;
+}
+
+/* Carousel RTL fixes */
+.carousel-control-prev {
+  right: 0;
+  left: auto;
+}
+
+.carousel-control-next {
+  left: 0;
+  right: auto;
+}
+
+/* Custom components RTL fixes */
+.sidebar {
+  text-align: right;
+}
+
+.sidebar .nav-link {
+  text-align: right;
+}
+
+/* Responsive RTL adjustments */
+@media (max-width: 768px) {
+  .container-fluid {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+  
+  .table-responsive {
+    direction: ltr;
+  }
+  
+  .table-responsive .table {
+    direction: rtl;
+  }
+}
+
+/* Print RTL fixes */
+@media print {
+  body {
+    direction: rtl;
+    text-align: right;
+  }
+  
+  .table th,
+  .table td {
+    text-align: right;
+  }
+  
+  .page-break-after {
+    page-break-after: always;
+  }
+  
+  .page-break-before {
+    page-break-before: always;
+  }
+  
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* Custom scrollbar for RTL */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--gray-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gray-400);
+  border-radius: var(--border-radius-sm);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-500);
+}
+
+/* Selection styling */
+::selection {
+  background-color: var(--primary-color);
+  color: var(--white);
+}
+
+::-moz-selection {
+  background-color: var(--primary-color);
+  color: var(--white);
+}

@@ -1,0 +1,161 @@
+/* CSS Custom Properties / Variables */
+
+:root {
+  /* Primary Colors */
+  --primary-color: #00bf63a5;
+  --primary-dark: #00A555;
+  --primary-light: #66d9a3;
+  
+  /* Secondary Colors */
+  --secondary-color: #011939;
+  --secondary-light: #1a2b4a;
+  --secondary-dark: #000b1a;
+  
+  /* Accent Colors */
+  --accent-gradient: linear-gradient(135deg, #00BF63 0%, #00D26A 100%);
+  --success-color: #198754;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+  --info-color: #0dcaf0;
+  
+  /* Neutral Colors */
+  --light-bg: #f8f9fa;
+  --white: #ffffff;
+  --gray-100: #f8f9fa;
+  --gray-200: #e9ecef;
+  --gray-300: #dee2e6;
+  --gray-400: #ced4da;
+  --gray-500: #adb5bd;
+  --gray-600: #6c757d;
+  --gray-700: #495057;
+  --gray-800: #343a40;
+  --gray-900: #212529;
+  
+  /* Text Colors */
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --text-muted: #8d949e;
+  --text-light: #ffffff;
+  
+  /* Border Colors */
+  --border-color: #dee2e6;
+  --border-light: #f1f3f4;
+  --border-dark: #adb5bd;
+  
+  /* Shadows */
+  --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  --shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+  
+  /* Border Radius */
+  --border-radius: 0.375rem;
+  --border-radius-sm: 0.25rem;
+  --border-radius-lg: 0.5rem;
+  --border-radius-xl: 1rem;
+  --border-radius-pill: 50rem;
+  
+  /* Spacing */
+  --spacer: 1rem;
+  --spacer-sm: 0.5rem;
+  --spacer-lg: 1.5rem;
+  --spacer-xl: 3rem;
+  
+  /* Font Sizes */
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-xxl: 1.5rem;
+  
+  /* Font Weights */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* Line Heights */
+  --line-height-sm: 1.25;
+  --line-height-base: 1.5;
+  --line-height-lg: 1.75;
+  
+  /* Transitions */
+  --transition-base: all 0.2s ease-in-out;
+  --transition-fast: all 0.15s ease-in-out;
+  --transition-slow: all 0.3s ease-in-out;
+  
+  /* Z-Index Levels */
+  --z-index-dropdown: 1000;
+  --z-index-sticky: 1020;
+  --z-index-fixed: 1030;
+  --z-index-modal-backdrop: 1040;
+  --z-index-modal: 1050;
+  --z-index-popover: 1060;
+  --z-index-tooltip: 1070;
+  --z-index-toast: 9999;
+  
+  /* Layout */
+  --sidebar-width: 280px;
+  --navbar-height: 60px;
+  --content-max-width: 1200px;
+  
+  /* RTL Specific */
+  --text-align-start: right;
+  --text-align-end: left;
+  --float-start: right;
+  --float-end: left;
+  
+  /* Component Specific */
+  --card-border-radius: var(--border-radius);
+  --card-shadow: var(--shadow-sm);
+  --button-border-radius: var(--border-radius);
+  --input-border-radius: var(--border-radius);
+  
+  /* Status Colors */
+  --status-draft: var(--gray-500);
+  --status-pending: var(--warning-color);
+  --status-approved: var(--info-color);
+  --status-active: var(--success-color);
+  --status-inactive: var(--gray-500);
+  --status-cancelled: var(--danger-color);
+  --status-completed: var(--success-color);
+  
+  /* Priority Colors */
+  --priority-low: var(--success-color);
+  --priority-medium: var(--warning-color);
+  --priority-high: var(--danger-color);
+  --priority-urgent: #8b0000;
+  
+  /* Inventory Status Colors */
+  --stock-good: var(--success-color);
+  --stock-low: var(--warning-color);
+  --stock-out: var(--danger-color);
+  
+  /* Supplier Rating Colors */
+  --rating-excellent: #28a745;
+  --rating-good: #6fa8dc;
+  --rating-average: #ffc107;
+  --rating-poor: #fd7e14;
+  --rating-bad: #dc3545;
+}
+
+/* Dark mode variables (for future implementation) */
+[data-theme="dark"] {
+  --light-bg: #1a1a1a;
+  --white: #2d2d2d;
+  --text-primary: #ffffff;
+  --text-secondary: #b6b6b6;
+  --text-muted: #8a8a8a;
+  --border-color: #404040;
+  --card-shadow: 0 0.5rem 1rem rgba(255, 255, 255, 0.05);
+}
+
+/* Print styles variables */
+@media print {
+  :root {
+    --shadow-sm: none;
+    --shadow: none;
+    --shadow-lg: none;
+    --card-shadow: none;
+  }
+}
