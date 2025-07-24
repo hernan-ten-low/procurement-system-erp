@@ -7,6 +7,11 @@ import SupplierView from './pages/Suppliers/SupplierView';
 import SupplierDetail from './pages/Suppliers/SupplierDetail';
 import SupplierForm from './pages/Suppliers/SupplierForm';
 import CategoriesList from './pages/Categories/CategoriesList';
+import RFQList from './pages/RFQ/RFQList';
+import RFQCreate from './pages/RFQ/RFQCreate';
+import RFQView from './pages/RFQ/RFQView';
+import RFQEdit from './pages/RFQ/RFQEdit';
+import RFQCompare from './pages/RFQ/RFQCompare';
 import './App.css';
 
 function App() {
@@ -22,6 +27,12 @@ function App() {
           <Route path="/suppliers/add" element={<SupplierForm />} />
           <Route path="/suppliers/edit/:id" element={<SupplierForm />} />
           <Route path="/categories" element={<CategoriesList />} />
+          <Route path="/rfq" element={<RFQList />} />
+          <Route path="/rfq/list" element={<RFQList />} />
+          <Route path="/rfq/create" element={<RFQCreate />} />
+          <Route path="/rfq/view/:id" element={<RFQView />} />
+          <Route path="/rfq/edit/:id" element={<RFQEdit />} />
+          <Route path="/rfq/compare/:id" element={<RFQCompare />} />
         </Routes>
       </Layout>
     </Router>
