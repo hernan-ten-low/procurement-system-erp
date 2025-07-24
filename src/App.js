@@ -4,6 +4,7 @@ import Layout from './components/Layout/Layout';
 import Dashboard from './pages/Dashboard';
 import SuppliersList from './pages/Suppliers/SuppliersList';
 import SupplierView from './pages/Suppliers/SupplierView';
+import SupplierDetail from './pages/Suppliers/SupplierDetail';
 import SupplierForm from './pages/Suppliers/SupplierForm';
 import CategoriesList from './pages/Categories/CategoriesList';
 import './App.css';
@@ -17,6 +18,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/suppliers" element={<SuppliersList />} />
           <Route path="/suppliers/view/:id" element={<SupplierView />} />
+          <Route path="/suppliers/detail/:id" element={<SupplierDetail />} />
           <Route path="/suppliers/add" element={<SupplierForm />} />
           <Route path="/suppliers/edit/:id" element={<SupplierForm />} />
           <Route path="/categories" element={<CategoriesList />} />

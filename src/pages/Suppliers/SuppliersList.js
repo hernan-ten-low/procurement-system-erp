@@ -314,8 +314,8 @@ const SuppliersList = () => {
                       <div className="btn-group btn-group-sm" role="group">
                         <Button
                           variant="outline-primary"
-                          title="צפייה"
-                          onClick={() => navigate(`/suppliers/view/${supplier.id}`)}
+                          title="צפייה מפורטת"
+                          onClick={() => navigate(`/suppliers/detail/${supplier.id}`)}
                         >
                           <i className="bi bi-eye"></i>
                         </Button>
