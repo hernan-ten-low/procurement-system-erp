@@ -12,6 +12,7 @@ import RFQCreate from './pages/RFQ/RFQCreate';
 import RFQView from './pages/RFQ/RFQView';
 import RFQEdit from './pages/RFQ/RFQEdit';
 import RFQCompare from './pages/RFQ/RFQCompare';
+import Reports from './pages/Reports/Reports';
 import './App.css';
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
           <Route path="/rfq/view/:id" element={<RFQView />} />
           <Route path="/rfq/edit/:id" element={<RFQEdit />} />
           <Route path="/rfq/compare/:id" element={<RFQCompare />} />
+          <Route path="/reports" element={<Reports />} />
         </Routes>
       </Layout>
     </Router>
